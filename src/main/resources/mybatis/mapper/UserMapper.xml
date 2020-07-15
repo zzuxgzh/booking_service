@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzu.dao.IUserDao">
+    <resultMap id="BaseMap" type="com.zzu.entity.User">
+        <id column="user_id" property="userId"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="pwd" property="pwd" jdbcType="VARCHAR"/>
+        <result column="tel" property="tel" jdbcType="CHAR"/>
+        <result column="IDCard" property="ID_card" jdbcType="CHAR"/>
+        <result column="gender" property="gender"/>
+        <result column="company" property="company" jdbcType="VARCHAR"/>
+        <result column="status" property="status" />
+    </resultMap>
+
+    <select id="getUserById" resultType="com.zzu.entity.User">
+        select * from user where user_id=#{id};
+    </select>
+
+    <select id="getAllUser" resultMap="BaseMap">
+        select * from user;
+    </select>
+
+    <select id="getSomeUser" resultMap="BaseMap">
+        select * from user
+        <where>
+            <if test="param != null">
+                name like #{param} or tel like #{param}
+            </if>
+        </where>
+    </select>
+
+    <insert id="insert" parameterType="com.zzu.entity.User">
+        insert into user(name, pwd, tel, ID_card, gender, company, status)
+        values (#{name}, #{pwd}, #{tel}, #{ID_card}, #{gender}, #{company}, #{status});
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.zzu.entity.User">
+        insert into user
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="name != null" >
+                name,
+            </if>
+            <if test="pwd != null" >
+                pwd,
+            </if>
+            <if test="tel != null" >
+                tel,
+            </if>
+            <if test="IDCard != null" >
+                ID_card,
+            </if>
+            <if test="gender != null" >
+                gender,
+            </if>
+            <if test="company != null" >
+                company,
+            </if>
+            <if test="status != null" >
+                status,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="name != null" >
+                #{name},
+            </if>
+            <if test="pwd != null" >
+                #{pwd,jdbcType=VARCHAR},
+            </if>
+            <if test="tel != null" >
+                #{tel,jdbcType=CHAR},
+            </if>
+            <if test="IDCard != null" >
+                #{IDCard,jdbcType=CHAR},
+            </if>
+            <if test="gender != null" >
+                #{gender},
+            </if>
+            <if test="company != null" >
+                #{company,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null" >
+                #{status},
+            </if>
+        </trim>
+    </insert>
+
+    <delete id="deleteById" >
+        delete from user where user_id = #{id}
+    </delete>
+
+    <update id="update" parameterType="com.zzu.entity.User">
+        update user
+        set name = #{name}, pwd = #{pwd}, tel = #{tel}, ID_card = #{IDCard}, gender = #{gender},
+            company = #{company}, status = #{status}
+        where user_id = #{userId}
+    </update>
+    <update id="updateSelective" parameterType="com.zzu.entity.User">
+        update user
+        <set>
+            <if test="name != null">name = #{name}, </if>
+            <if test="pwd != null">pwd = #{pwd}, </if>
+            <if test="tel != null">tel = #{tel}, </if>
+            <if test="IDCard != null">ID_card = #{IDCard}, </if>
+            <if test="gender != null">gender = #{gender}, </if>
+            <if test="company != null">company = #{company}, </if>
+            <if test="status != null">status = #{status}, </if>
+        </set>
+        where user_id = #{userId}
+    </update>
+</mapper>
