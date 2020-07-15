@@ -104,5 +104,11 @@ class BookingServiceApplicationTests {
         System.out.println(o);
     }
 
+    //redis配置
+    @Test
+    public void testRedis(){
+        testService.buyTicket("hgy1","1","hgy");
+    }
+
 
 }

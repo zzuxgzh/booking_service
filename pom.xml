@@ -84,6 +84,20 @@
             <artifactId>spring-boot-starter-amqp</artifactId>
         </dependency>
 
+        <!--        配置热部署 修改后按F9即可直接发布-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!--jstl-->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+            <version>1.2</version>
+        </dependency>
+
     </dependencies>
 
     <dependencyManagement>

@@ -6,7 +6,38 @@
     <select id="getUser" resultType="com.zzu.booking_service.bean.test.User">
         select * from test where id=#{id};
     </select>
+    <select id="getAllUser" resultType="com.zzu.booking_service.bean.test.User">
+        select * from test;
+    </select>
     <insert id="insertUser">
         insert into test(id,my_age) values (#{id},#{myAge});
     </insert>
+
+
+    <insert id="insertTicket">
+        insert into testticket values (#{id},#{name},#{num});
+    </insert>
+    <select id="getTicket" resultType="com.zzu.booking_service.bean.test.Ticket">
+        select * from testticket where id=#{id};
+    </select>
+    <update id="incTicketNum">
+        update testticket set num=(num+1) where id=#{id};
+    </update>
+    <update id="desTicketNum">
+        update testticket set num=(num-1) where id=#{id};
+    </update>
+    <insert id="insertOrder">
+        insert into testorder values (#{id},#{testticketid},#{userid},0);
+    </insert>
+    <select id="getOrder" resultType="int">
+        select state from testorder where id=#{id};
+    </select>
+    <select id="buyTicketNo" resultType="int">
+        begin;
+            update testticket set num=(num-1) where id=#{testticketid};
+            insert into testorder values (#{id},#{testticketid},#{userid},0);
+            select state from testorder where id=#{id};
+        commit;
+    </select>
+
 </mapper>
