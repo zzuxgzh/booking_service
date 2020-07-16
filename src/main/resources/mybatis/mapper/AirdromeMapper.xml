@@ -15,14 +15,18 @@
         select * from airdrome
         <where>
             <if test="param != null">
-                name like #{param}
+                name like #{param} or tel like #{param}
             </if>
         </where>
     </select>
 
+    <select id="getAirByLocation" resultType="com.zzu.entity.Airdrome">
+        select * from airdrome where location like #{location};
+    </select>
+
     <insert id="insert" parameterType="com.zzu.entity.Airdrome">
-        insert into airdrome(name, location)
-        values (#{name}, #{location});
+        insert into airdrome(name, location, tel, status)
+        values (#{name}, #{location}, #{tel}, #{status});
     </insert>
 
     <delete id="deleteById" >
@@ -31,14 +35,14 @@
 
     <update id="update" parameterType="com.zzu.entity.Airdrome">
         update Airdrome
-        set name = #{name}, location = #{location}
+        set name = #{name}, location = #{location}, tel = #{tel}
         where air_id = #{airId}
     </update>
     <update id="updateSelective" parameterType="com.zzu.entity.Airdrome">
         update user
         <set>
             <if test="name != null">name = #{name}, </if>
-            <if test="airId != null">air_id = #{airId}, </if>
+            <if test="tel != null">tel = #{tel}, </if>
         </set>
         where air_id = #{airId}
     </update>
