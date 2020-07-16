@@ -6,6 +6,8 @@ import com.zzu.entity.Staff;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class StaffServiceImpl implements IStaffService {
     @Autowired
@@ -22,5 +24,10 @@ public class StaffServiceImpl implements IStaffService {
         }else{
             return null;
         }
+    }
+
+    @Override
+    public List<Staff> getAllAStaffs() {
+        return isd.getAllStaffs();
     }
 }
