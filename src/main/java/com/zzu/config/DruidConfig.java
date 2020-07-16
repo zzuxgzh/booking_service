@@ -1,4 +1,4 @@
-package com.zzu.booking_service.config;
+package com.zzu.config;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.http.StatViewServlet;

@@ -1,4 +1,4 @@
-package com.zzu.booking_service.config;
+package com.zzu.config;
 
 import org.springframework.amqp.core.Queue;
 import org.springframework.context.annotation.Configuration;

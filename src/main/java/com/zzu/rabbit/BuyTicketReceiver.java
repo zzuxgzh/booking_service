@@ -1,8 +1,7 @@
-package com.zzu.booking_service.rabbit;
+package com.zzu.rabbit;
 
-import com.zzu.booking_service.config.RabbitMQConfig;
+import com.zzu.config.RabbitMQConfig;
 import com.zzu.booking_service.test.ITestDao;
-import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
