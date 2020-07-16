@@ -32,12 +32,12 @@
     <select id="getOrder" resultType="int">
         select state from testorder where id=#{id};
     </select>
-    <select id="buyTicketNo" resultType="int">
-        begin;
+    <insert id="buyTicketNo">
+        start transaction;
             update testticket set num=(num-1) where id=#{testticketid};
             insert into testorder values (#{id},#{testticketid},#{userid},0);
             select state from testorder where id=#{id};
         commit;
-    </select>
+    </insert>
 
 </mapper>

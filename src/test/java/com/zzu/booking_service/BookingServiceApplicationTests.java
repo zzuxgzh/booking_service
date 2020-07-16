@@ -30,6 +30,9 @@ class BookingServiceApplicationTests {
     @Autowired
     RedisTemplate<Object,Object> myRedisTemplate;
 
+    @Autowired
+    RedisTemplate<Object,Object> redisAllTemplate;
+
 
     //消息队列自动注入
     @Autowired
@@ -107,7 +110,32 @@ class BookingServiceApplicationTests {
     //redis配置
     @Test
     public void testRedis(){
-        testService.buyTicket("hgy1","1","hgy");
+//        testService.selectTicket("1");
+        testService.buyTicket("hgy2","2","hgy");
+        testService.buyTicket("hgy2","2","hgy");
+        testService.buyTicket("hgy2","2","hgy");
+        testService.buyTicket("hgy2","2","hgy");
+    }
+
+    //redis配置
+    @Test
+    public void testRedis1(){
+        int max = 9;
+        stringRedisTemplate.opsForValue().set("test1", String.valueOf(new Integer(max)),604800);
+        System.out.println(stringRedisTemplate.opsForValue().get("test1"));
+    }
+
+    //测试redisAll模板
+    @Test
+    public void testRedis2(){
+//        User wll = testService.getUser("wll");
+//        redisAllTemplate.opsForValue().set("wll",wll);
+        redisAllTemplate.opsForValue().set("wllnum1",2);
+//        User to = (User) redisAllTemplate.opsForValue().get("wll");
+        int wllnum = (int) redisAllTemplate.opsForValue().get("wllnum1");
+//        System.out.println(to.getMyAge() + "/" + wllnum);
+        System.out.println("/" + wllnum);
+
     }
 
 

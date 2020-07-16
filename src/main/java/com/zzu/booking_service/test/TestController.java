@@ -12,10 +12,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 @Controller
 @RequestMapping("/data/test")
@@ -23,6 +22,24 @@ public class TestController {
 
     @Autowired
     ITestService testService;
+
+    //测试session
+    @ResponseBody
+    @RequestMapping(value = "/setSession")
+    public Map<String, Object> getSession(HttpServletRequest request) {
+        request.getSession().setAttribute("userName", "glmapper");
+        Map<String, Object> map = new HashMap<>();
+        map.put("sessionId", request.getSession().getId());
+        return map;
+    }
+    //测试session
+    @ResponseBody
+    @RequestMapping(value = "/getSession")
+    public String get(HttpServletRequest request) {
+        String userName = (String) request.getSession().getAttribute("userName");
+        return userName;
+    }
+
 
 
     //返回jsp页面 get方法
@@ -116,9 +133,9 @@ public class TestController {
     @ResponseBody
     @GetMapping("/selectOrder")
     public String selectOrder(String userid,String testticketid) {
-        boolean re = testService.selectOrder(testticketid);
+        boolean re = testService.selectOrder(userid+testticketid);
         if(re) return "已成功抢到，请在五分钟内付款";
-        else return "票已售完，请稍后再试";
+        else return "未抢到票，请稍后再试";
     }
 
 
