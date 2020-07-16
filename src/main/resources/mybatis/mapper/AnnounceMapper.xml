@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzu.dao.IAnnounceDao">
+    <select id="getAnnounceById" resultType="com.zzu.entity.Announce">
+        select * from announce where ann_id=#{id};
+    </select>
+
+    <select id="getAllAnnounces" resultType="com.zzu.entity.Announce">
+        select * from announce;
+    </select>
+
+    <select id="getLimitAnnounces" resultType="com.zzu.entity.Announce">
+        select * from announce LIMIT #{size}
+    </select>
+
+    <insert id="insert" parameterType="com.zzu.entity.Announce">
+        insert into announce(staf_id, drom_id, date, content, status)
+        values (#{stafId}, #{dromId}, #{date}, #{content}, #{status});
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.zzu.entity.Announce">
+        insert into announce
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="name != null" >
+                name,
+            </if>
+            <if test="pwd != null" >
+                pwd,
+            </if>
+            <if test="tel != null" >
+                tel,
+            </if>
+            <if test="IDCard != null" >
+                ID_card,
+            </if>
+            <if test="gender != null" >
+                gender,
+            </if>
+            <if test="company != null" >
+                company,
+            </if>
+            <if test="status != null" >
+                status,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="stafId != null" >
+                #{staf_id},
+            </if>
+            <if test="dromId != null" >
+                #{drom_id},
+            </if>
+            <if test="date != null" >
+                #{date},
+            </if>
+            <if test="content != null" >
+                #{content},
+            </if>
+            <if test="status != null" >
+                #{status},
+            </if>
+        </trim>
+    </insert>
+
+    <delete id="deleteById" >
+        delete from announce where ann_id = #{id}
+    </delete>
+
+    <update id="update" parameterType="com.zzu.entity.Announce">
+        update announce
+        set staf_id = #{stafId}, drom_id = #{dromId}, date = #{date}, content = #{content}, status = #{status}
+        where ann_id = #{annId}
+    </update>
+    <update id="updateSelective" parameterType="com.zzu.entity.Announce">
+        update announce
+        <set>
+            <if test="name != null">staf_id = #{stafId}, </if>
+            <if test="pwd != null">drom_id = #{dromId}, </if>
+            <if test="tel != null">date = #{date}, </if>
+            <if test="IDCard != null">content = #{content}, </if>
+            <if test="gender != null">status = #{status}, </if>
+        </set>
+        where ann_id = #{annId}
+    </update>
+</mapper>

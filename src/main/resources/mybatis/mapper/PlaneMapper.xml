@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzu.dao.IPlaneDao">
+    <select id="getPlaneById" resultType="com.zzu.entity.Plane">
+        select * from plane where plane_id=#{id};
+    </select>
+
+    <select id="getAllPlanes" resultType="com.zzu.entity.Plane">
+        select * from plane;
+    </select>
+
+    <select id="getSomePlane" resultType="com.zzu.entity.Plane">
+        select * from plane
+        <where>
+            <if test="param != null">
+                company like #{param}
+            </if>
+        </where>
+    </select>
+
+    <select id="getPlanesByAirdrome" resultType="com.zzu.entity.Plane">
+        select * from plane where airdrome_id=#{id};
+    </select>
+
+    <insert id="insert" parameterType="com.zzu.entity.Plane">
+        insert into plane(type, economy_class, bussiness_class, first_class, company, airdrome_id, status)
+        values (#{type}, #{economyClass}, #{bussinessClass}, #{firstClass}, #{company}, #{airdromeId}, #{status});
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.zzu.entity.Plane">
+        insert into plane
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="type != null" >
+                type,
+            </if>
+            <if test="economyClass != null" >
+                economy_class,
+            </if>
+            <if test="bussinessClass != null" >
+                bussiness_class,
+            </if>
+            <if test="firstClass != null" >
+                first_class,
+            </if>
+            <if test="company != null" >
+                company,
+            </if>
+            <if test="airdromeId != null" >
+                airdrome_id,
+            </if>
+            <if test="status != null" >
+                status,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="type != null" >
+                #{type},
+            </if>
+            <if test="economyClass != null" >
+                #{economyClass},
+            </if>
+            <if test="bussinessClass != null" >
+                #{bussinessClass},
+            </if>
+            <if test="firstClass != null" >
+                #{firstClass},
+            </if>
+            <if test="company != null" >
+                #{company},
+            </if>
+            <if test="airdromeId != null" >
+                #{airdromeId},
+            </if>
+            <if test="status != null" >
+                #{status},
+            </if>
+        </trim>
+    </insert>
+
+    <delete id="deleteById" >
+        delete from plane where plane_id = #{id}
+    </delete>
+
+    <update id="update" parameterType="com.zzu.entity.Plane">
+        update plane
+        set type = #{type}, economy_class = #{economyClass}, bussiness_class = #{bussinessClass},
+        first_class = #{firstClass}, company = #{company}, airdrome_id = #{airdromeId}, status = #{status}
+        where plane_id = #{planeId}
+    </update>
+    <update id="updateSelective" parameterType="com.zzu.entity.Plane">
+        update plane
+        <set>
+            <if test="type != null">type = #{type}, </if>
+            <if test="economyClass != null">economy_class = #{economyClass}, </if>
+            <if test="bussinessClass != null">bussiness_class = #{bussinessClass}, </if>
+            <if test="firstClass != null">first_class = #{firstClass}, </if>
+            <if test="company != null">company = #{company}, </if>
+            <if test="airdromeId != null">airdrome_id = #{airdromeId}, </if>
+            <if test="status != null">status = #{status}, </if>
+        </set>
+        where plane_id = #{planeId}
+    </update>
+</mapper>

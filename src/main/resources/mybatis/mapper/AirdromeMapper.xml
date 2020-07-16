@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzu.dao.IAirdromeDao">
+    <select id="getAirdromeById" resultType="com.zzu.entity.Airdrome">
+        select * from airdrome where air_id=#{id};
+    </select>
+
+    <select id="getAllAirdromes" resultType="com.zzu.entity.Airdrome">
+        select * from airdrome;
+    </select>
+
+    <select id="getSomeAirdrome" resultType="com.zzu.entity.Airdrome">
+        select * from airdrome
+        <where>
+            <if test="param != null">
+                name like #{param}
+            </if>
+        </where>
+    </select>
+
+    <insert id="insert" parameterType="com.zzu.entity.Airdrome">
+        insert into airdrome(name, location)
+        values (#{name}, #{location});
+    </insert>
+
+    <delete id="deleteById" >
+        delete from airdrome where air_id = #{id}
+    </delete>
+
+    <update id="update" parameterType="com.zzu.entity.Airdrome">
+        update Airdrome
+        set name = #{name}, location = #{location}
+        where air_id = #{airId}
+    </update>
+    <update id="updateSelective" parameterType="com.zzu.entity.Airdrome">
+        update user
+        <set>
+            <if test="name != null">name = #{name}, </if>
+            <if test="airId != null">air_id = #{airId}, </if>
+        </set>
+        where air_id = #{airId}
+    </update>
+</mapper>

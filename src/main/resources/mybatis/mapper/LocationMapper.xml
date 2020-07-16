@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzu.dao.ILocationDao">
+    <select id="getAllLoacations" resultType="com.zzu.entity.Location">
+        select * from location;
+    </select>
+
+    <select id="getLocationByRegionCode" resultType="com.zzu.entity.Location">
+        select * from location where RegionCode  = #{regionCode};
+    </select>
+
+    <select id="getSomeLocationByRegionCode" resultType="com.zzu.entity.Location">
+        select * from location
+        <where>
+            <if test="regionCode != null">
+                RegionCode like #{regionCode}
+            </if>
+        </where>
+    </select>
+    <select id="getPrvList" resultType="com.zzu.entity.Location">
+        select * from location where Stage = 1
+    </select>
+    <select id="getCityListByPrv" resultType="com.zzu.entity.Location">
+        select * from location where stage = 2 and RegionCode like #{regionCode}
+    </select>
+    <select id="getTownListByCity" resultType="com.zzu.entity.Location">
+        select * from location where stage = 3 and RegionCode like #{regionCode}
+    </select>
+</mapper>
