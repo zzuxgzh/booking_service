@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzu.dao.IFlightDao">
+    <select id="getFlightById" resultType="com.zzu.entity.Flight">
+        select * from flight where flight_id=#{id};
+    </select>
+
+    <select id="getSourceFlightsByAirdome" resultType="com.zzu.entity.Flight">
+        select * from flight where source = #{source};
+    </select>
+
+    <select id="getTargetFlightsByAirdome" resultType="com.zzu.entity.Flight">
+        select * from flight where target = #{target};
+    </select>
+
+    <insert id="insert" parameterType="com.zzu.entity.Flight">
+        insert into flight(plane_id, source, target, starttime, preendtime, endtime, status)
+        values (#{planeId}, #{source}, #{target}, #{starttime}, #{preendtime}, #{endtime}, #{status});
+    </insert>
+
+    <delete id="deleteById" >
+        delete from flight where flight_id = #{id}
+    </delete>
+
+    <update id="update" parameterType="com.zzu.entity.Flight">
+        update flight
+        set plane_id = #{planeId}, source = #{source}, target = #{target}, starttime = #{starttime},
+        preendtime = #{preendtime}, endtime = #{endtime}, status = #{status}
+        where flight_id = #{flightId}
+    </update>
+    <update id="updateSelective" parameterType="com.zzu.entity.Flight">
+        update flight
+        <set>
+            <if test="planeId != null">plane_id = #{planeId}, </if>
+            <if test="source != null">source = #{source}, </if>
+            <if test="target != null">target = #{target}, </if>
+            <if test="starttime != null">starttime = #{starttime}, </if>
+            <if test="preendtime != null">preendtime = #{preendtime}, </if>
+            <if test="endtime != null">endtime = #{endtime}, </if>
+            <if test="status != null">status = #{status}, </if>
+        </set>
+        where flight_id = #{flightId}
+    </update>
+</mapper>

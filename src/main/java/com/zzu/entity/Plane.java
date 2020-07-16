@@ -9,7 +9,7 @@ public class Plane {
     private BigDecimal bussinessClass;
     private BigDecimal firstClass;
     private String company;
-    private int airdromeId;
+    private int airdromeId;//当前所在机场
     private int status;
 
     public int getPlaneId() {

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzu.dao.ITicketDao">
+    <select id="getTicketById" resultType="com.zzu.entity.Ticket">
+        select * from ticket where ticket_id=#{id};
+    </select>
+
+    <select id="getAllTickets" resultType="com.zzu.entity.Ticket">
+        select * from ticket;
+    </select>
+
+    <select id="getSomeTicket" resultType="com.zzu.entity.Ticket">
+        select * from ticket
+        <where>
+            <if test="param != null">
+                travel_agency like #{param}
+            </if>
+        </where>
+    </select>
+
+    <insert id="insert" parameterType="com.zzu.entity.Ticket">
+        insert into ticket(flight, customer, type, price, travel_agency, status)
+        values (#{flight}, #{customer}, #{type}, #{price}, #{travelAgency}, #{status});
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.zzu.entity.Ticket">
+        insert into ticket
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="flight != null" >
+                flight,
+            </if>
+            <if test="customer != null" >
+                customer,
+            </if>
+            <if test="type != null" >
+                type,
+            </if>
+            <if test="price != null" >
+                price,
+            </if>
+            <if test="travelAgency != null" >
+                travel_agency,
+            </if>
+            <if test="status != null" >
+                status,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="flight != null" >
+                #{flight},
+            </if>
+            <if test="customer != null" >
+                #{customer},
+            </if>
+            <if test="type != null" >
+                #{type},
+            </if>
+            <if test="price != null" >
+                #{price},
+            </if>
+            <if test="travelAgency != null" >
+                #{travelAgency},
+            </if>
+            <if test="status != null" >
+                #{status},
+            </if>
+        </trim>
+    </insert>
+
+    <delete id="deleteById" >
+        delete from ticket where ticket_id = #{id}
+    </delete>
+
+    <update id="update" parameterType="com.zzu.entity.Ticket">
+        update ticket
+        set flight = #{flight}, customer = #{customer}, type = #{type}, price = #{price},
+        travel_agency = #{travelAgency}, status = #{status}
+        where ticket_id = #{ticketId}
+    </update>
+    <update id="updateSelective" parameterType="com.zzu.entity.Ticket">
+        update ticket
+        <set>
+            <if test="flight != null">flight = #{flight}, </if>
+            <if test="customer != null">customer = #{customer}, </if>
+            <if test="type != null">type = #{type}, </if>
+            <if test="price != null">price = #{price}, </if>
+            <if test="travelAgency != null">travel_agency = #{travelAgency}, </if>
+            <if test="status != null">status = #{status}, </if>
+        </set>
+        where ticket_id = #{ticketId}
+    </update>
+</mapper>
