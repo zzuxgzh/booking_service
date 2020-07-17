@@ -1,8 +1,8 @@
-package com.zzu.entity;
+package com.zzu.booking_manager.plane;
 
-import java.math.BigDecimal;
+import org.springframework.data.annotation.Transient;
 
-public class Plane {
+public class PlaneOutParam {
     private int planeId;
     private int type;
     private int economyClass;
@@ -10,6 +10,10 @@ public class Plane {
     private int firstClass;
     private String company;
     private int airdromeId;//当前所在机场
+    private String name;//机场名字
+    private String location;//机场地址
+    @Transient
+    private String locationName;//机场地址全称
     private int status;
 
     public int getPlaneId() {
@@ -68,6 +72,30 @@ public class Plane {
         this.airdromeId = airdromeId;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getLocationName() {
+        return locationName;
+    }
+
+    public void setLocationName(String locationName) {
+        this.locationName = locationName;
+    }
+
     public int getStatus() {
         return status;
     }
@@ -78,7 +106,7 @@ public class Plane {
 
     @Override
     public String toString() {
-        return "Plane{" +
+        return "PlaneOutParam{" +
                 "planeId=" + planeId +
                 ", type=" + type +
                 ", economyClass=" + economyClass +
@@ -86,6 +114,9 @@ public class Plane {
                 ", firstClass=" + firstClass +
                 ", company='" + company + '\'' +
                 ", airdromeId=" + airdromeId +
+                ", name='" + name + '\'' +
+                ", location='" + location + '\'' +
+                ", locationName='" + locationName + '\'' +
                 ", status=" + status +
                 '}';
     }

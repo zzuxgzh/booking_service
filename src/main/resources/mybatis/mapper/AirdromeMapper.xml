@@ -21,7 +21,7 @@
     </select>
 
     <select id="getAirByLocation" resultType="com.zzu.entity.Airdrome">
-        select * from airdrome where location like #{location};
+        select * from airdrome where location like #{location} order by air_id ;
     </select>
 
     <insert id="insert" parameterType="com.zzu.entity.Airdrome">
@@ -34,14 +34,14 @@
     </delete>
 
     <update id="update" parameterType="com.zzu.entity.Airdrome">
-        update Airdrome
+        update airdrome
         set name = #{name}, location = #{location}, tel = #{tel}
         where air_id = #{airId}
     </update>
     <update id="updateSelective" parameterType="com.zzu.entity.Airdrome">
-        update user
+        update airdrome
         <set>
-            <if test="name != null">name = #{name}, </if>
+            <if test="name != null"> name = #{name}, </if>
             <if test="tel != null">tel = #{tel}, </if>
         </set>
         where air_id = #{airId}

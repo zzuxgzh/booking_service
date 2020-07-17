@@ -4,11 +4,11 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zzu.dao.IPlaneDao">
     <select id="getPlaneById" resultType="com.zzu.entity.Plane">
-        select * from plane where plane_id=#{id};
+        select * from plane where plane_id = #{id}
     </select>
 
     <select id="getAllPlanes" resultType="com.zzu.entity.Plane">
-        select * from plane;
+        select * from plane
     </select>
 
     <select id="getSomePlane" resultType="com.zzu.entity.Plane">
@@ -22,6 +22,24 @@
 
     <select id="getPlanesByAirdrome" resultType="com.zzu.entity.Plane">
         select * from plane where airdrome_id=#{id};
+    </select>
+
+    <select id="getOutPlaneById" resultType="com.zzu.booking_manager.plane.PlaneOutParam">
+       select plane_id, type, economy_class, bussiness_class, first_class,
+        company, airdrome_id, name, location,plane.status from plane, airdrome
+        where airdrome_id = air_id and plane_id=#{id};
+    </select>
+
+    <select id="getAllOutPlanes" resultType="com.zzu.booking_manager.plane.PlaneOutParam">
+        select plane_id, type, economy_class, bussiness_class, first_class,
+        company, airdrome_id, name, location,plane.status from plane, airdrome
+        where airdrome_id = air_id;
+    </select>
+
+    <select id="getOutPlanesByAirdrome" resultType="com.zzu.booking_manager.plane.PlaneOutParam">
+        select plane_id, type, economy_class, bussiness_class, first_class,
+        company, airdrome_id, name, location,plane.status from plane, airdrome
+        where airdrome_id = air_id and airdrome_id=#{id};
     </select>
 
     <insert id="insert" parameterType="com.zzu.entity.Plane">

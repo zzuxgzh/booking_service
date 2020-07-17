@@ -48,6 +48,13 @@ public class AirdromeController {
     @ResponseBody
     public String deleteAirById(int id){
         System.out.println("---deleteAirById----param----->"+id);
-        return null;
+        return ids.deleteAirById(id);
+    }
+
+    @GetMapping("deleteAirs")
+    @ResponseBody
+    public String deleteAirs(int index,int[] msg){
+        System.out.println("---deleteAirs----param----->"+msg.toString());
+        return ids.deleteAirs(index,msg);
     }
 }

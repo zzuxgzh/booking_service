@@ -66,4 +66,24 @@ public class AirdromeServiceImpl implements IAirdromeService {
             return "修改失败请重试！！";
         }
     }
+
+    @Override
+    public String deleteAirById(int id) {
+        if(idd.deleteById(id)==1){
+            return "删除成功！！";
+        }else{
+            return "删除失败请重试！！";
+        }
+    }
+
+    @Override
+    public String deleteAirs(int index, int[] msg) {
+        for(int i=0;i<index;i++){
+            int a =idd.deleteById(msg[i]);
+            if(a!=1){
+                return "在删除第"+(i+1)+"个时出错，请重试！！";
+            }
+        }
+        return "删除成功！！";
+    }
 }

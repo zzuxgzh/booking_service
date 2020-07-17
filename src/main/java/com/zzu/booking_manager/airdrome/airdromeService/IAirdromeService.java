@@ -12,4 +12,8 @@ public interface IAirdromeService {
     String insertAirdrome(Airdrome air);
 
     String updateAirdromeById(Airdrome air);
+
+    String deleteAirById(int id);
+
+    String deleteAirs(int index, int[] msg);
 }
