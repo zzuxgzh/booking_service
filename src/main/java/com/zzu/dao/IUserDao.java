@@ -11,9 +11,9 @@ public interface IUserDao {
     User getUserById(@Param("id") int id);
     List<User> getAllUsers();
     List<User> getSomeUser(@Param("param")String param);//模糊查询
-    int insert(@Param("user") User user);
-    int insertSelective(@Param("user") User user);
+    int insert(User user);
+    int insertSelective(User user);
     int deleteById(@Param("id")int id);
-    int update(@Param("user")User user);
-    int updateSelective(@Param("user")User user);
+    int update(User user);
+    int updateSelective(User user);
 }

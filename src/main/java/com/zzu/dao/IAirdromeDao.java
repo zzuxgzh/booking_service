@@ -12,8 +12,8 @@ public interface IAirdromeDao {
     List<Airdrome> getAllAirdromes();
     List<Airdrome> getSomeAirdrome(@Param("param")String param);//模糊查询
     List<Airdrome> getAirByLocation(String s);
-    int insert(@Param("airdrome") Airdrome airdrome);
+    int insert(Airdrome airdrome);
     int deleteById(@Param("id")int id);
-    int update(@Param("airdrome")Airdrome airdrome);
-    int updateSelective(@Param("airdrome")Airdrome airdrome);
+    int update(Airdrome airdrome);
+    int updateSelective(Airdrome airdrome);
 }

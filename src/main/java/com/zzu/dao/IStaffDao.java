@@ -11,9 +11,9 @@ public interface IStaffDao {
     Staff getStaffById(@Param("id") int id);
     List<Staff> getAllStaffs();
     List<Staff> getSomeStaff(@Param("param")String param);//模糊查询
-    int insert(@Param("staff") Staff staff);
-    int insertSelective(@Param("staff") Staff staff);
+    int insert(Staff staff);
+    int insertSelective(Staff staff);
     int deleteById(@Param("id")int id);
-    int update(@Param("staff")Staff staff);
-    int updateSelective(@Param("staff")Staff staff);
+    int update(Staff staff);
+    int updateSelective(Staff staff);
 }
