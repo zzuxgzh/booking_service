@@ -116,10 +116,10 @@
     <update id="updateSelective" parameterType="com.zzu.entity.Plane">
         update plane
         <set>
-            <if test="type != null">type = #{type}, </if>
-            <if test="economyClass != null">economy_class = #{economyClass}, </if>
-            <if test="bussinessClass != null">bussiness_class = #{bussinessClass}, </if>
-            <if test="firstClass != null">first_class = #{firstClass}, </if>
+            <if test="type != 10">type = #{type}, </if>
+            <if test="economyClass != 0">economy_class = #{economyClass}, </if>
+            <if test="bussinessClass != 0">bussiness_class = #{bussinessClass}, </if>
+            <if test="firstClass != 0">first_class = #{firstClass}, </if>
             <if test="company != null">company = #{company}, </if>
             <if test="airdromeId != null">airdrome_id = #{airdromeId}, </if>
             <if test="status != null">status = #{status}, </if>

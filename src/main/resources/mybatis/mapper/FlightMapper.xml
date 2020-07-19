@@ -15,6 +15,22 @@
         select * from flight where target = #{target};
     </select>
 
+    <select id="getFliById" resultType="com.zzu.booking_manager.flight.FlightOutParam">
+        select * from flight where flight_id=#{id};
+    </select>
+
+    <select id="getSourceFlisByAirdome" resultType="com.zzu.booking_manager.flight.FlightOutParam">
+        select * from flight where source = #{source};
+    </select>
+
+    <select id="getTargetFlisByAirdome" resultType="com.zzu.booking_manager.flight.FlightOutParam">
+        select * from flight where target = #{target};
+    </select>
+
+    <select id="getAllFli" resultType="com.zzu.booking_manager.flight.FlightOutParam">
+        select * from flight;
+    </select>
+
     <insert id="insert" parameterType="com.zzu.entity.Flight">
         insert into flight(plane_id, source, target, starttime, preendtime, status, economy_class, business_class, first_class, oprice)
         values (#{planeId}, #{source}, #{target}, #{starttime}, #{preendtime}, #{status}, #{economyClass}, #{businessClass}, #{firstClass}, #{oprice});
@@ -42,5 +58,8 @@
             <if test="status != null">status = #{status}, </if>
         </set>
         where flight_id = #{flightId}
+    </update>
+    <update id="changeFlightStatusById" parameterType="com.zzu.entity.Flight">
+        update flight set status = #{status} where flight_id = #{flightId}
     </update>
 </mapper>
