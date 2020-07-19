@@ -20,6 +20,29 @@
         </where>
     </select>
 
+    <select id="getSomeOutStaff" resultType="com.zzu.booking_manager.staff.StaffOutParam">
+        select staff_id, staff.name, pwd, staff.status, airdrome_id,
+        airdrome.name as airdrome_name, location from staff, airdrome
+        WHERE  airdrome_id = air_id
+            <if test="param != null">
+               and staff.name like #{param}
+            </if>
+
+    </select>
+
+
+    <select id="getAllOutStaff" resultType="com.zzu.booking_manager.staff.StaffOutParam">
+        select staff_id, staff.name, pwd, staff.status, airdrome_id,
+        airdrome.name as airdrome_name, location from staff, airdrome
+        where airdrome_id = air_id;
+    </select>
+
+    <select id="getOutStaffById" resultType="com.zzu.booking_manager.staff.StaffOutParam">
+         select staff_id, staff.name, pwd, staff.status, airdrome_id,
+        airdrome.name as airdrome_name, location from staff, airdrome
+        where airdrome_id = air_id and staff_id=#{id};
+    </select>
+
     <insert id="insert" parameterType="com.zzu.entity.Staff">
         insert into staff(name, pwd, status, airdrome_id)
         values (#{name}, #{pwd}, #{status}, #{airdromeId});
