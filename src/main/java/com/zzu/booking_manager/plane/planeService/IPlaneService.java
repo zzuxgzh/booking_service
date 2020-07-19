@@ -16,4 +16,6 @@ public interface IPlaneService {
     String deleteById(int id);
 
     String deletePlanes(int len, int[] msg);
+
+    List<PlaneOutParam> getNoFlightPlaneListByAirdrome(int airId);
 }

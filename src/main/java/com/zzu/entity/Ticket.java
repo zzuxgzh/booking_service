@@ -1,6 +1,7 @@
 package com.zzu.entity;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 public class Ticket {
     private int ticketId;
@@ -10,6 +11,7 @@ public class Ticket {
     private BigDecimal price;
     private int travelAgency;
     private int status;
+    private Date buyTime;
 
     public int getTicketId() {
         return ticketId;
@@ -67,6 +69,14 @@ public class Ticket {
         this.status = status;
     }
 
+    public Date getBuyTime() {
+        return buyTime;
+    }
+
+    public void setBuyTime(Date buyTime) {
+        this.buyTime = buyTime;
+    }
+
     @Override
     public String toString() {
         return "Ticket{" +
@@ -77,6 +87,7 @@ public class Ticket {
                 ", price=" + price +
                 ", travelAgency=" + travelAgency +
                 ", status=" + status +
+                ", buyTime=" + buyTime +
                 '}';
     }
 }

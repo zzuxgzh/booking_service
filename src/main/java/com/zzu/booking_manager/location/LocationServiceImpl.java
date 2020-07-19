@@ -72,4 +72,34 @@ public class LocationServiceImpl implements ILocationService {
         }
         return ret_rg;
     }
+
+    @Override
+    public List<CodeNamePair> getProvinceList() {
+        List<CodeNamePair> listCN = new ArrayList<CodeNamePair>();
+        for(Location rg : ild.getPrvList()){
+            CodeNamePair cn = new CodeNamePair(rg.getRegionCode(),rg.getPrv());
+            listCN.add(cn);
+        }
+        return listCN;
+    }
+
+    @Override
+    public List<CodeNamePair> getCityList(String prv) {
+        List<CodeNamePair> listCN = new ArrayList<CodeNamePair>();
+        for(Location rg : ild.getCityListByPrv(prv.substring(0,2)+"%")){
+            CodeNamePair cn = new CodeNamePair(rg.getRegionCode(),rg.getCty());
+            listCN.add(cn);
+        }
+        return listCN;
+    }
+
+    @Override
+    public List<CodeNamePair> getTownList(String cty) {
+        List<CodeNamePair> listCN = new ArrayList<CodeNamePair>();
+        for(Location rg : ild.getTownListByCity(cty.substring(0,4)+"%")){
+            CodeNamePair cn = new CodeNamePair(rg.getRegionCode(),rg.getTwn());
+            listCN.add(cn);
+        }
+        return listCN;
+    }
 }

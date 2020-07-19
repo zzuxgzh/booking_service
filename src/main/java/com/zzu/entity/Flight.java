@@ -1,5 +1,6 @@
 package com.zzu.entity;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class Flight {
@@ -11,6 +12,10 @@ public class Flight {
     private Date preendtime;
     private Date endtime;
     private int status;
+    private int economyClass;
+    private int businessClass;
+    private int firstClass;
+    private BigDecimal oprice;
 
     public int getFlightId() {
         return flightId;
@@ -76,6 +81,38 @@ public class Flight {
         this.status = status;
     }
 
+    public int getEconomyClass() {
+        return economyClass;
+    }
+
+    public void setEconomyClass(int economyClass) {
+        this.economyClass = economyClass;
+    }
+
+    public int getBusinessClass() {
+        return businessClass;
+    }
+
+    public void setBusinessClass(int businessClass) {
+        this.businessClass = businessClass;
+    }
+
+    public int getFirstClass() {
+        return firstClass;
+    }
+
+    public void setFirstClass(int firstClass) {
+        this.firstClass = firstClass;
+    }
+
+    public BigDecimal getOprice() {
+        return oprice;
+    }
+
+    public void setOprice(BigDecimal oprice) {
+        this.oprice = oprice;
+    }
+
     @Override
     public String toString() {
         return "Flight{" +
@@ -87,6 +124,10 @@ public class Flight {
                 ", preendtime=" + preendtime +
                 ", endtime=" + endtime +
                 ", status=" + status +
+                ", economyClass=" + economyClass +
+                ", businessClass=" + businessClass +
+                ", firstClass=" + firstClass +
+                ", oprice=" + oprice +
                 '}';
     }
 }

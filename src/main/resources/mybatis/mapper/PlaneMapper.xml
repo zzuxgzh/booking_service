@@ -42,6 +42,12 @@
         where airdrome_id = air_id and airdrome_id=#{id};
     </select>
 
+    <select id="getNoFlightPlaneListByAirdrome" resultType="com.zzu.booking_manager.plane.PlaneOutParam">
+        select plane_id, type, economy_class, bussiness_class, first_class,
+        company, airdrome_id, name, location,plane.status from plane, airdrome
+        where airdrome_id = air_id and airdrome_id=#{airId} and plane.status = 0;
+    </select>
+
     <insert id="insert" parameterType="com.zzu.entity.Plane">
         insert into plane(type, economy_class, bussiness_class, first_class, company, airdrome_id, status)
         values (#{type}, #{economyClass}, #{bussinessClass}, #{firstClass}, #{company}, #{airdromeId}, #{status});

@@ -83,4 +83,13 @@ public class PlaneServiceImpl implements IPlaneService {
         }
         return "删除成功！！";
     }
+
+    @Override
+    public List<PlaneOutParam> getNoFlightPlaneListByAirdrome(int airId) {
+        List<PlaneOutParam> planeOutParams = ipd.getNoFlightPlaneListByAirdrome(airId);
+        for (PlaneOutParam po:planeOutParams) {
+            po.setLocationName(ils.getFullNameById(po.getLocation()));
+        }
+        return planeOutParams;
+    }
 }

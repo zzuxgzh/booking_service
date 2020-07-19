@@ -21,4 +21,6 @@ public interface IPlaneDao {
     int deleteById(@Param("id")int id);
     int update(Plane plane);
     int updateSelective(Plane plane);
+
+    List<PlaneOutParam> getNoFlightPlaneListByAirdrome(int airId);
 }

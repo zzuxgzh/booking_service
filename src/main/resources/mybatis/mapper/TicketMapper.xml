@@ -21,8 +21,8 @@
     </select>
 
     <insert id="insert" parameterType="com.zzu.entity.Ticket">
-        insert into ticket(flight, customer, type, price, travel_agency, status)
-        values (#{flight}, #{customer}, #{type}, #{price}, #{travelAgency}, #{status});
+        insert into ticket(flight, customer, type, price, travel_agency, status, buy_time)
+        values (#{flight}, #{customer}, #{type}, #{price}, #{travelAgency}, #{status}, #{buyTime});
     </insert>
 
     <insert id="insertSelective" parameterType="com.zzu.entity.Ticket">
@@ -46,6 +46,9 @@
             <if test="status != null" >
                 status,
             </if>
+            <if test="buyTime != null" >
+                buy_time,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides="," >
             <if test="flight != null" >
@@ -65,6 +68,9 @@
             </if>
             <if test="status != null" >
                 #{status},
+            </if>
+            <if test="buyTime != null" >
+                #{buyTime},
             </if>
         </trim>
     </insert>

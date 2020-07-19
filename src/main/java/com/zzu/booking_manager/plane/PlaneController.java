@@ -49,4 +49,10 @@ public class PlaneController {
         System.out.println("---deleteAirs----param----->"+msg.toString());
         return ips.deletePlanes(len,msg);
     }
+
+    @GetMapping("getNoFlightPlaneListByAirdrome")
+    @ResponseBody
+    public List<PlaneOutParam> getNoFlightPlaneListByAirdrome(int airId){
+        return ips.getNoFlightPlaneListByAirdrome(airId);
+    }
 }
