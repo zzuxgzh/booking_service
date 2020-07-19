@@ -126,4 +126,7 @@
         </set>
         where plane_id = #{planeId}
     </update>
+    <update id="changePlaneStatus" parameterType="com.zzu.entity.Plane">
+        update plane set status = #{status} where plane_id = #{planeId}
+    </update>
 </mapper>

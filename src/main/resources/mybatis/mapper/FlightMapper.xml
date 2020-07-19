@@ -16,8 +16,8 @@
     </select>
 
     <insert id="insert" parameterType="com.zzu.entity.Flight">
-        insert into flight(plane_id, source, target, starttime, preendtime, endtime, status)
-        values (#{planeId}, #{source}, #{target}, #{starttime}, #{preendtime}, #{endtime}, #{status});
+        insert into flight(plane_id, source, target, starttime, preendtime, status, economy_class, business_class, first_class, oprice)
+        values (#{planeId}, #{source}, #{target}, #{starttime}, #{preendtime}, #{status}, #{economyClass}, #{businessClass}, #{firstClass}, #{oprice});
     </insert>
 
     <delete id="deleteById" >

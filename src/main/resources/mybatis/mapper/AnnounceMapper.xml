@@ -15,6 +15,21 @@
         select * from announce LIMIT #{size}
     </select>
 
+    <select id="getAnnById" resultType="com.zzu.entity.Announce">
+        select ann_id, staf_id, drom_id, date, content, status, name, location from announce,airdrome
+        where ann_id=#{id} and drom_id = air_id;
+    </select>
+
+    <select id="getAllAnn" resultType="com.zzu.entity.Announce">
+        select ann_id, staf_id, drom_id, date, content, status, name, location from announce,airdrome
+        where drom_id = air_id;
+    </select>
+
+    <select id="getLimitAnn" resultType="com.zzu.entity.Announce">
+        select ann_id, staf_id, drom_id, date, content, status, name, location from announce,airdrome
+        where ann_id=#{id} and drom_id = air_id LIMIT #{size};
+    </select>
+
     <insert id="insert" parameterType="com.zzu.entity.Announce">
         insert into announce(staf_id, drom_id, date, content, status)
         values (#{stafId}, #{dromId}, #{date}, #{content}, #{status});

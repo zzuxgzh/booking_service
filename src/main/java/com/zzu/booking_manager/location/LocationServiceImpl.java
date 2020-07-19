@@ -86,6 +86,9 @@ public class LocationServiceImpl implements ILocationService {
     @Override
     public List<CodeNamePair> getCityList(String prv) {
         List<CodeNamePair> listCN = new ArrayList<CodeNamePair>();
+        Location alo= ild.getLocationByRegionCode(prv);
+        CodeNamePair codeNamePair = new CodeNamePair(alo.getRegionCode(),"请选择");
+        listCN.add(codeNamePair);
         for(Location rg : ild.getCityListByPrv(prv.substring(0,2)+"%")){
             CodeNamePair cn = new CodeNamePair(rg.getRegionCode(),rg.getCty());
             listCN.add(cn);
@@ -96,6 +99,16 @@ public class LocationServiceImpl implements ILocationService {
     @Override
     public List<CodeNamePair> getTownList(String cty) {
         List<CodeNamePair> listCN = new ArrayList<CodeNamePair>();
+        Location alo= ild.getLocationByRegionCode(cty);
+        CodeNamePair codeNamePair = null;
+        if(alo.getStage()==1){//默认省
+            codeNamePair = new CodeNamePair(alo.getRegionCode(),"请选择");
+            listCN.add(codeNamePair);
+            return listCN;
+        }else{
+            codeNamePair = new CodeNamePair(alo.getRegionCode(),"请选择");
+            listCN.add(codeNamePair);
+        }
         for(Location rg : ild.getTownListByCity(cty.substring(0,4)+"%")){
             CodeNamePair cn = new CodeNamePair(rg.getRegionCode(),rg.getTwn());
             listCN.add(cn);
