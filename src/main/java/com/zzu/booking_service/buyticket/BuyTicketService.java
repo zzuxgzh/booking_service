@@ -1,12 +1,13 @@
 package com.zzu.booking_service.buyticket;
 
+import com.zzu.booking_service.bean.AnnounceShow;
 import com.zzu.booking_service.bean.FlightAll;
 import com.zzu.booking_service.bean.LocationCity;
 import com.zzu.booking_service.bean.test.Ticket;
-import com.zzu.booking_service.bean.test.User;
 import com.zzu.booking_service.test.ITestDao;
 import com.zzu.booking_service.test.ITestService;
 import com.zzu.config.RabbitMQConfig;
+import com.zzu.entity.User;
 import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.core.AmqpAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -15,9 +16,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -104,5 +103,64 @@ public class BuyTicketService implements IBuyTicketService {
             redisAllTemplate.expire(key,30,TimeUnit.SECONDS);   //过期时间
         }
         return flightAll;
+    }
+
+    @Override
+    public boolean intoSingleInfo(int buyId,User user) {
+        if (user.getTel() == null || user.getTel().trim().equals("")) return false;
+        User user1 = buyTicketDao.getUserByTel(user.getTel());
+        if (user1==null){   //不存在这个用户
+            //创建新的用户
+            if(user.getIDCard() == null || user.getName() == null) return false;
+            System.out.println(user.getIDCard());
+            System.out.println(user.getName());
+            if(user.getIDCard().trim().equals("") || user.getName().trim().equals("")) return false;
+            try {
+                buyTicketDao.insertUser(user);
+            } catch (Exception e) {
+                System.out.println("创建失败");;
+                return false;
+            }
+            user1 = buyTicketDao.getUserByTel(user.getTel());
+        }
+        String key = "buyinfo"+buyId;
+        redisAllTemplate.opsForList().leftPush(key,user1);
+        return true;
+    }
+
+    @Override
+    public List<User> getInfo(int buyId) {
+        String key = "buyinfo"+buyId;
+        List<Object> listSwap = redisAllTemplate.opsForList().range(key,0,-1);
+        List<User> list = new ArrayList<>();
+        if (listSwap == null) return list;
+        Set<String> set = new HashSet<>();
+        for (Object o : listSwap) {
+            User user = (User)o;
+            //通过set集合将不重复的去除
+            if(!set.contains(user.getTel())){
+                list.add(user);
+                set.add(user.getTel());
+            }
+        }
+        return list;
+    }
+
+    @Override
+    public List<AnnounceShow> selectAnnounce(String startTime, String endTime,String searchString) {
+        List<AnnounceShow> announceShows = null;
+        try {
+            announceShows = buyTicketDao.selectAnnounce(startTime,endTime,searchString);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (announceShows == null) announceShows = new ArrayList<>();
+        Calendar calendar = Calendar.getInstance();
+        for (AnnounceShow announceShow : announceShows) {
+            calendar.setTime(announceShow.getDate());
+            calendar.add(Calendar.HOUR,-8);
+            announceShow.setDate(calendar.getTime());
+        }
+        return announceShows;
     }
 }

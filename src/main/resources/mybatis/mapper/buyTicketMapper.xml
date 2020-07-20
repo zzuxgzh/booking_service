@@ -32,4 +32,21 @@
         select distinct Prv from location where left(RegionCode,2)=left(#{code},2) and Prv is not null;
     </select>
 
+    <select id="getUserByTel" resultType="com.zzu.entity.User">
+        select * from user
+where tel=#{tel}
+    </select>
+    <select id="getIDCard" resultType="string">
+        select ID_card from user
+where tel=#{tel}
+    </select>
+    <insert id="insertUser" parameterType="com.zzu.entity.User">
+        insert into user values(null,#{name},null,#{tel},#{IDCard},#{gender},#{company},-1);
+    </insert>
+    <select id="selectAnnounce" resultType="com.zzu.booking_service.bean.AnnounceShow">
+        select a.date,air.name,a.content from announce a,airdrome air
+        where air.air_id=a.drom_id
+        and a.date>=#{startTime} and a.date&lt;=#{endTime}
+        and (name like '%${searchString}%' or content like '%${searchString}%');
+    </select>
 </mapper>

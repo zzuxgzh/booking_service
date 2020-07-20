@@ -1,14 +1,15 @@
 package com.zzu.booking_service.bean;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.math.BigDecimal;
-import java.sql.Date;
-import java.sql.Timestamp;
+import java.util.Date;
 
 public class FlightAll {
 
     private int id;
-    private Timestamp starttime;
-    private Timestamp preendtime;
+    private Date starttime;
+    private Date preendtime;
     private int economyClass;
     private int businessClass;
     private int firstClass;
@@ -51,19 +52,19 @@ public class FlightAll {
         this.id = id;
     }
 
-    public Timestamp getStarttime() {
+    public Date getStarttime() {
         return starttime;
     }
 
-    public void setStarttime(Timestamp starttime) {
+    public void setStarttime(Date starttime) {
         this.starttime = starttime;
     }
 
-    public Timestamp getPreendtime() {
+    public Date getPreendtime() {
         return preendtime;
     }
 
-    public void setPreendtime(Timestamp preendtime) {
+    public void setPreendtime(Date preendtime) {
         this.preendtime = preendtime;
     }
 

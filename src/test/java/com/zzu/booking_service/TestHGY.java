@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,6 +47,15 @@ public class TestHGY {
     @Test
     public void test3(){
         SmsTool.sendSms("15839125979","123466");
+    }
+
+    @Test
+    public void test4(){
+
+        Date date = new Date();
+        System.out.println(date.toString());
+
+
     }
 
 }

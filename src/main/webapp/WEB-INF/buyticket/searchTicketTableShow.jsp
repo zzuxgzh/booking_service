@@ -1,6 +1,8 @@
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.TimeZone" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <table onselectstart="return false" οnselect="document.selection.empty()" id="searchTicketShowTable" class="table table-striped">
     <caption>查询到的航班( 共 ${num} 个结果<span style="color: red;"></span> )</caption>
     <thead>
@@ -20,8 +22,8 @@
         <td>${flight.id}</td>
         <td>${flight.startname}</td>
         <td>${flight.endname}</td>
-        <td>${flight.starttime}</td>
-        <td>${flight.preendtime}</td>
+        <td><fmt:formatDate value="${flight.starttime}" pattern="yyyy-MM-dd HH:mm:ss"/> </td>
+        <td><fmt:formatDate value="${flight.preendtime}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
         <td>${flight.economyClass}-${flight.businessClass}-${flight.firstClass}</td>
         <td>${flight.oprice}元</td>
     </tr>
