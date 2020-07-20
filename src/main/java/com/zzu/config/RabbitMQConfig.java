@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConfig {
 
-    public static final String QUEUE = "buytiket";
+    public static final String QUEUE = "buyTicket";
 
     @Bean
     public Queue buyticketQueue(){

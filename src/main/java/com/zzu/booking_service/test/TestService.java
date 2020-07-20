@@ -2,6 +2,7 @@ package com.zzu.booking_service.test;
 
 import com.zzu.booking_service.bean.test.Ticket;
 import com.zzu.booking_service.bean.test.User;
+import com.zzu.config.RabbitMQConfig;
 import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.core.AmqpAdmin;
 import org.springframework.amqp.core.DirectExchange;
@@ -91,7 +92,7 @@ public class TestService implements ITestService {
                 ticket = ticket1.getNum();
                 System.out.println(ticket);
                 redisAllTemplate.opsForValue().set(key, ticket);    //604800
-                redisAllTemplate.expire(key,3000,TimeUnit.SECONDS);   //过期时间
+                redisAllTemplate.expire(key,5,TimeUnit.SECONDS);   //过期时间
             } catch (Exception e) {
                 e.printStackTrace();
                 System.out.println("查到的票为null，不存在......");
@@ -123,11 +124,11 @@ public class TestService implements ITestService {
             return false;
         }else{
             System.out.println("模拟发送邮件信息等业务...");
-            try {
-                Thread.sleep(20);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+//            try {
+//                Thread.sleep(20);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
         }
         //模拟发送验证码等业务
         Thread.sleep(20);
@@ -138,6 +139,7 @@ public class TestService implements ITestService {
     @Override
     public boolean buyTicket(String id, String testticketid, String userid) {
 
+        System.out.println(userid+":"+testticketid);
         String keyMax = "ticket:num:max:" + testticketid;
         String keyOn = "ticket:num:on:" + testticketid;
         int max = -1;
@@ -145,15 +147,15 @@ public class TestService implements ITestService {
         try {
             max  = (int) redisAllTemplate.opsForValue().get(keyMax);
         } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("重新获取最大值");
+//            e.printStackTrace();
+//            System.out.println("重新获取最大值");
         }
         try {
             on = (int) redisAllTemplate.opsForValue().get(keyOn);
             System.out.println("2:"+on);
         } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("重新获取当前值");
+//            e.printStackTrace();
+//            System.out.println("重新获取当前值");
         }
         if(max == -1){
             try {
@@ -161,7 +163,7 @@ public class TestService implements ITestService {
                 redisAllTemplate.opsForValue().set(keyMax,max);
                 redisAllTemplate.expire(keyMax,86400,TimeUnit.SECONDS);
             } catch (Exception e) {
-                e.printStackTrace();
+//                e.printStackTrace();
                 return false;
             }
             System.out.println("3:"+max);
@@ -169,26 +171,27 @@ public class TestService implements ITestService {
         if(on == -1){
             on = 1;
             redisAllTemplate.opsForValue().set(keyOn, on);
-            redisAllTemplate.expire(keyOn,60,TimeUnit.SECONDS);
+            redisAllTemplate.expire(keyOn,30,TimeUnit.SECONDS);
         }else try {
             redisAllTemplate.opsForValue().increment(keyOn);
             try {
-                on = (int) redisAllTemplate.opsForValue().get(keyOn);
+//                on = (int) redisAllTemplate.opsForValue().get(keyOn);
             } catch (Exception e) {}
         } catch (Exception e) {}
 
-        System.out.println("max:"+max+"on:"+on);
+//        System.out.println("max:"+max+"on:"+on);
         if(on>max) return false;
 
+//        System.out.println("要发到消息队列里了");
         //对象被默认初始化之后发送出去
         try {
-            rabbitTemplate.convertAndSend("buytiket", userid+"-"+testticketid);
+            rabbitTemplate.convertAndSend(RabbitMQConfig.QUEUE, userid+"-"+testticketid);
         } catch (AmqpException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             return false;
         }
         //说明成功进入消息队列，有希望成功
-
+//        System.out.println("已经发到消息队列发送成功啦");
         return true;
     }
 

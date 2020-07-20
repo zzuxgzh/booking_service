@@ -104,6 +104,19 @@
             <artifactId>spring-session-data-redis</artifactId>
         </dependency>
 
+<!--        配置Excel相关-->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>3.9</version>
+        </dependency>
+
+        <!-- 阿里云短信服务所需依赖包 -->
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>aliyun-java-sdk-core</artifactId>
+            <version>4.0.3</version>
+        </dependency>
 
     </dependencies>
 

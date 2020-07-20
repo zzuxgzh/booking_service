@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzu.booking_service.buyticket.IBuyTicketDao">
+
+    <select id="getAllCity" resultType="com.zzu.booking_service.bean.LocationCity">
+        SELECT c.RegionCode,CONCAT(p.Prv,c.Cty) Cty
+        FROM location c
+        left JOIN location p
+        on left(c.RegionCode,2)=left(p.RegionCode,2)
+        where c.Stage=2 and p.Stage=1;
+    </select>
+    
+    <select id="getFlightByCityTime" parameterType="map" resultType="com.zzu.booking_service.bean.FlightAll">
+        select f.plane_ID id,f.starttime,f.preendtime,f.economy_class,f.business_class,f.first_class,f.oprice,a1.name startname,a2.name endname,l1.RegionCode startcode,l2.RegionCode endcode
+        from flight f,airdrome a1,airdrome a2,location l1,location l2
+        where f.source=a1.air_id and f.target=a2.air_id
+        and a1.location=l1.RegionCode and a2.location=l2.RegionCode
+        and ( left(l1.RegionCode,4)=left(#{fromCity},4) or ( left(l1.RegionCode,2)=left(#{fromCity},2) and right(l1.RegionCode,4)='0000' ) )
+        and ( left(l2.RegionCode,4)=left(#{toCity},4) or ( left(l2.RegionCode,2)=left(#{toCity},2) and right(l2.RegionCode,4)='0000' ) )
+        and f.starttime>="${startTime}" and f.starttime&lt;="${endTime}";
+    </select>
+
+    <select id="getTwn" resultType="string">
+        select Twn from location where RegionCode=#{code};
+    </select>
+    <select id="getCty" resultType="string">
+        select distinct Cty from location where left(RegionCode,4)=left(#{code},4) and Cty is not null;
+    </select>
+    <select id="getPro" resultType="string">
+        select distinct Prv from location where left(RegionCode,2)=left(#{code},2) and Prv is not null;
+    </select>
+
+</mapper>

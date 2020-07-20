@@ -55,18 +55,19 @@ public class BuyTicketReceiver {
                     testDao.incTicketNum(s[1]);
                 }else{
                     //更新余票
-                    String s1 = "ticket:all:" + s[1];
-                    System.out.println(s1);
-                    int num = 0;
-                    try {
-                        Ticket ticket = testDao.getTicket(s[1]);
-                        num = ticket.getNum();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        System.out.println("查询余票失败...");
-                    }
-                    redisAllTemplate.opsForValue().set(s1,num); //缓存中票的数量
-                    System.out.println(info + "模拟发送邮件信息等业务...");
+//                    String s1 = "ticket:all:" + s[1];
+//                    System.out.println(s1);
+//                    int num = 0;
+//                    try {
+//                        Ticket ticket = testDao.getTicket(s[1]);
+//                        num = ticket.getNum();
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                        System.out.println("查询余票失败...");
+//                    }
+//                    //暂时不用
+//                    redisAllTemplate.opsForValue().set(s1,num); //缓存中票的数量
+//                    System.out.println(info + "模拟发送邮件信息等业务...");
                     try {
                         Thread.sleep(20);
                     } catch (InterruptedException e) {

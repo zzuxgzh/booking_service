@@ -5,15 +5,21 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.zzu.booking_service.bean.test.SingleUser;
 import com.zzu.booking_service.bean.test.Ticket;
 import com.zzu.booking_service.bean.test.User;
+import com.zzu.booking_service.utl.POIUtils;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.*;
 import java.util.*;
 
 @Controller
@@ -136,6 +142,65 @@ public class TestController {
         boolean re = testService.selectOrder(userid+testticketid);
         if(re) return "已成功抢到，请在五分钟内付款";
         else return "未抢到票，请稍后再试";
+    }
+
+    //测试上传excel
+    @ResponseBody
+    @RequestMapping("/uploadExcel")
+    public Map<String,Object> uploadExcel(@RequestParam(value = "file") MultipartFile excelFile, HttpServletRequest req, HttpServletResponse resp){
+        Map<String, Object> param = new HashMap<String, Object>();
+        List<SingleUser> list = new ArrayList<SingleUser>();
+        try {
+            List<String[]> rowList = POIUtils.readExcel(excelFile);
+            for(int i=0;i<rowList.size();i++){
+                String[] row = rowList.get(i);
+                SingleUser info = new SingleUser();
+                info.setName(row[0]);
+                info.setAge(Integer.valueOf(row[1]));
+                info.setMobile(row[2]);
+                list.add(info);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            param.put("dataStatus", 0);
+            return param;
+        }
+        System.out.println(list.toString());
+        ////////////后面写代码，给他们分别购票
+        param.put("dataStatus", 1);
+        return param;
+    }
+
+    //测试下载文件
+    @RequestMapping("/downloadExcel")
+    public void downloadTmpl(HttpServletRequest request,HttpServletResponse response){
+     	try {
+     		String fileName = "booking.xlsx";
+    		String path = request.getSession().getServletContext().getRealPath("/file")+"/"+fileName;
+    		path = path.replace("\\", "/");
+         	File file = new File(path);
+         	String filename = file.getName();
+	     	// 取得文件的后缀名。
+            String ext = filename.substring(filename.lastIndexOf(".") + 1).toUpperCase();
+            // 以流的形式下载文件。
+            InputStream fis = new BufferedInputStream(new FileInputStream(path));
+            byte[] buffer = new byte[fis.available()];
+            fis.read(buffer);
+            fis.close();
+            // 清空response
+            response.reset();
+            // 设置response的Header
+            response.addHeader("Content-Disposition", "attachment;filename=" + new String(filename.getBytes()));
+            response.addHeader("Content-Length", "" + file.length());
+            OutputStream toClient = new BufferedOutputStream(response.getOutputStream());
+            response.setContentType("application/octet-stream");
+            toClient.write(buffer);
+            toClient.flush();
+            toClient.close();
+     	} catch (IOException ex) {
+             ex.printStackTrace();
+     	}
+
     }
 
 
