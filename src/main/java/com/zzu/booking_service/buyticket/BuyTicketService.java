@@ -1,13 +1,13 @@
 package com.zzu.booking_service.buyticket;
 
-import com.zzu.booking_service.bean.AnnounceShow;
-import com.zzu.booking_service.bean.FlightAll;
-import com.zzu.booking_service.bean.LocationCity;
+import com.zzu.booking_service.bean.*;
 import com.zzu.booking_service.bean.test.Ticket;
 import com.zzu.booking_service.test.ITestDao;
 import com.zzu.booking_service.test.ITestService;
 import com.zzu.config.RabbitMQConfig;
 import com.zzu.entity.User;
+import com.zzu.tool.SmsTool;
+import com.zzu.tool.TicketStrategy;
 import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.core.AmqpAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -16,6 +16,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.text.DateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -125,6 +127,8 @@ public class BuyTicketService implements IBuyTicketService {
         }
         String key = "buyinfo"+buyId;
         redisAllTemplate.opsForList().leftPush(key,user1);
+        /////////////暂时将时间延长，方便使用??????????????????????????
+        redisAllTemplate.expire(key,1200,TimeUnit.SECONDS);   //刷新其过期时间为两分钟
         return true;
     }
 
@@ -162,5 +166,110 @@ public class BuyTicketService implements IBuyTicketService {
             announceShow.setDate(calendar.getTime());
         }
         return announceShows;
+    }
+
+    @Override
+    public boolean flushInfo(int buyId) {
+        try {
+            redisAllTemplate.delete("buyinfo"+buyId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean buyTicket(int buyId, int flightId, String kind) {
+
+        int type = 0;
+        if (kind.equals("economy")) type = 1;
+        if (kind.equals("business")) type = 2;
+        if (kind.equals("first")) type = 3;
+        BigDecimal price = buyTicketDao.getPriceById(flightId);
+        System.out.println("price"+price);
+        UserOn userOn = new UserOn(buyId,flightId,kind,type);
+        List<BuyUserOn> list = new ArrayList<>();
+        //查找购买者的身份
+        int status = buyTicketDao.getStatusById(buyId);
+        List<User> info = getInfo(buyId);
+        for (User user : info) {
+            BuyUserOn buyUserOn = new BuyUserOn();
+            buyUserOn.setId(user.getUserId());
+            buyUserOn.setMoney(TicketStrategy.getTicketPriceBySttus(price,status,user.getStatus()));
+            list.add(buyUserOn);
+            System.out.println(buyUserOn.toString());
+        }
+        //首先跟缓存中的票数对比，进行初步筛选
+        String keyMax = "flight:num:max:"+kind+":"+ flightId;
+        String keyOn = "flight:num:on:"+kind+":"+ flightId;
+        int max = -1;
+        int on = -1;
+        try {
+            max  = (int) redisAllTemplate.opsForValue().get(keyMax);
+        } catch (Exception e) {
+//            e.printStackTrace();
+//            System.out.println("重新获取最大值");
+        }
+        try {
+            on = (int) redisAllTemplate.opsForValue().get(keyOn);
+            System.out.println("2:"+on);
+        } catch (Exception e) {
+//            e.printStackTrace();
+//            System.out.println("重新获取当前值");
+        }
+        if(max == -1){
+            try {
+                max = buyTicketDao.getFlightNum(kind,flightId);
+                redisAllTemplate.opsForValue().set(keyMax,max);
+                redisAllTemplate.expire(keyMax,5,TimeUnit.SECONDS);
+            } catch (Exception e) {
+//                e.printStackTrace();
+                return false;
+            }
+            System.out.println("3:"+max);
+        }
+        if(on == -1){
+            on = 1;
+            redisAllTemplate.opsForValue().set(keyOn, on);
+            redisAllTemplate.expire(keyOn,10,TimeUnit.SECONDS);
+        }else try {
+            for (BuyUserOn buyUserOn : list) {
+                redisAllTemplate.opsForValue().increment(keyOn);
+            }
+            try {
+//                on = (int) redisAllTemplate.opsForValue().get(keyOn);
+            } catch (Exception e) {}
+        } catch (Exception e) {}
+
+//        System.out.println("max:"+max+"on:"+on);
+        if(on>max) return false;
+
+        //现在将数据收集齐了，开始进入缓存
+        String code = SmsTool.getCode();
+        String keyUser = "ticket:buyuser:"+flightId+":"+buyId+":"+code;
+        String keyList = "ticket:buylist:"+flightId+":"+buyId+":"+code;
+        redisAllTemplate.opsForValue().set(keyUser,userOn);
+        redisAllTemplate.expire(keyUser,120,TimeUnit.SECONDS);
+        for (BuyUserOn buyUserOn : list) {
+            System.out.println(keyList);
+            redisAllTemplate.opsForList().leftPush(keyList,buyUserOn);
+        }
+        redisAllTemplate.expire(keyList,120,TimeUnit.SECONDS);
+        String mqInfo = keyUser+"-"+keyList;
+//        传入消息队列进行处理
+        //暂时模拟成在本地处理
+        try {
+            rabbitTemplate.convertAndSend(RabbitMQConfig.BUY_TICKET_QUEUE, mqInfo);
+        } catch (AmqpException e) {
+//            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int getSingleTicketNumById(int id, int flightId) {
+        return buyTicketDao.getSingleTicketNumById(id,flightId);
     }
 }

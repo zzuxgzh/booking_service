@@ -13,7 +13,7 @@
     </select>
     
     <select id="getFlightByCityTime" parameterType="map" resultType="com.zzu.booking_service.bean.FlightAll">
-        select f.plane_ID id,f.starttime,f.preendtime,f.economy_class,f.business_class,f.first_class,f.oprice,a1.name startname,a2.name endname,l1.RegionCode startcode,l2.RegionCode endcode
+        select f.flight_id id,f.starttime,f.preendtime,f.economy_class,f.business_class,f.first_class,f.oprice,a1.name startname,a2.name endname,l1.RegionCode startcode,l2.RegionCode endcode
         from flight f,airdrome a1,airdrome a2,location l1,location l2
         where f.source=a1.air_id and f.target=a2.air_id
         and a1.location=l1.RegionCode and a2.location=l2.RegionCode
@@ -48,5 +48,30 @@ where tel=#{tel}
         where air.air_id=a.drom_id
         and a.date>=#{startTime} and a.date&lt;=#{endTime}
         and (name like '%${searchString}%' or content like '%${searchString}%');
+    </select>
+    <select id="getPriceById" resultType="BigDecimal">
+        select oprice from flight where flight_id=#{id};
+    </select>
+    <select id="getStatusById" resultType="int">
+        select status from user where user_id=#{id};
+    </select>
+    <update id="decFlightNum">
+        update flight set ${kind}_class = ${kind}_class-#{num}
+        where flight_id=#{flightId}
+    </update>
+    <update id="addFlightNum">
+        update flight set ${kind}_class = ${kind}_class+#{num}
+        where flight_id=#{flightId}
+    </update>
+    <insert id="insetTicket">
+        insert into ticket values(null,#{flightId},#{buyUserId},#{type},#{price},#{userId},0,#{onTime});
+    </insert>
+
+    <select id="getFlightNum" resultType="int">
+        select ${kind}_class from flight where flight_id=#{id};
+    </select>
+
+    <select id="getSingleTicketNumById" resultType="int">
+        select count(*) from ticket where travel_agency=#{id} and flight=#{flightId};
     </select>
 </mapper>

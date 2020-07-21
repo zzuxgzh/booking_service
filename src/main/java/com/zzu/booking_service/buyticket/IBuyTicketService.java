@@ -7,6 +7,7 @@ import com.zzu.booking_service.bean.LocationCity;
 import com.zzu.entity.User;
 import org.apache.ibatis.annotations.Param;
 
+import javax.xml.soap.SAAJResult;
 import java.util.List;
 import java.util.Map;
 
@@ -25,4 +26,13 @@ public interface IBuyTicketService {
     //通过时间范围，查找公告通知
     public List<AnnounceShow> selectAnnounce( String startTime,String endTime,String searchString);
 
+    //清空用户已录入信息
+    public boolean flushInfo(int buyId);
+
+
+    //购票
+    public boolean buyTicket(int buyId, int flightId, String kind);
+
+    //判断该用户对于该订单共购买了几次票
+    public int getSingleTicketNumById(int id,int flightId);
 }

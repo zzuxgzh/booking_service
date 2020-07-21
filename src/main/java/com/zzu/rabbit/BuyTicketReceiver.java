@@ -15,7 +15,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-//购票之后的消息队列监听器
+
 @Component
 @RabbitListener(queues = RabbitMQConfig.QUEUE)
 public class BuyTicketReceiver {

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.text.DateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,8 +54,15 @@ public class TestHGY {
     public void test4(){
 
         Date date = new Date();
-        System.out.println(date.toString());
+        DateFormat format = DateFormat.getDateTimeInstance();//可以精确到时分秒
+        System.out.println(format.format(date));
 
+    }
+
+    @Test
+    public void test5(){
+
+        buyTicketService.buyTicket(22,1,"economy");
 
     }
 

@@ -69,8 +69,8 @@ public class BuyTicketController {
         ///模拟一下之后删掉？》》》》》》？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？
         map.put("startTime","2020-7-18 00:00:00");
         map.put("endTime","2020-7-19 23:59:59");
-        map.put("fromCity","410100");
-        map.put("toCity","410100");
+//        map.put("fromCity","410100");
+//        map.put("toCity","410100");
         ///模拟一下之后删掉？》》》》》》？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？
         List<FlightAll> flightByCityTime = buyTicketService.getFlightByCityTime(map);
         System.out.println(flightByCityTime.toString());
@@ -123,6 +123,57 @@ public class BuyTicketController {
         else return "buyticket/luruInfoTableShow";
     }
 
+    @ResponseBody
+    @PostMapping("/getInfoNumber")
+    public String getInfoNumber(HttpSession httpSession,Model model,@RequestBody JsonNode jsonNode) {
+        this.jsonNode = jsonNode;
+        map = new HashMap<>();
+        int buyId = 22; //模拟当前登陆的用户
+        if(httpSession.getAttribute("userId")!=null) buyId= (int) httpSession.getAttribute("userId");
+//        buyId = 22; //模拟当前登陆的用户
+        List<User> list = buyTicketService.getInfo(buyId);
+        return String.valueOf(list.size());
+    }
+
+    //清空当前用户已录入的信息
+    @ResponseBody
+    @PostMapping("/flushInfo")
+    public String flushInfo(HttpSession httpSession,Model model,@RequestBody JsonNode jsonNode) {
+        this.jsonNode = jsonNode;
+        map = new HashMap<>();
+        int buyId = 22; //模拟当前登陆的用户
+        if(httpSession.getAttribute("userId")!=null) buyId= (int) httpSession.getAttribute("userId");
+//        buyId = 22; //模拟当前登陆的用户
+        boolean re = buyTicketService.flushInfo(buyId);
+        if (re) return "1";
+        else return "0";
+    }
+
+    //进行购票操作
+    @ResponseBody
+    @PostMapping("/buyTicket")
+    public String buyTicket(HttpSession httpSession,Model model,@RequestBody JsonNode jsonNode) {
+        this.jsonNode = jsonNode;
+
+        String kind = getString("kind");
+        String flightId = getString("flightId");
+        if(kind.trim().equals("") || flightId.trim().equals("")) return "0";
+
+        int buyId = 22; //模拟当前登陆的用户
+        if(httpSession.getAttribute("userId")!=null) buyId= (int) httpSession.getAttribute("userId");
+//        buyId = 22; //模拟当前登陆的用户
+        int flight = 0;
+        try {
+            flight = Integer.valueOf(flightId);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            return "0";
+        }
+        boolean re = buyTicketService.buyTicket(buyId,flight,kind);
+        if (re) return "1";
+        else return "0";
+    }
+
     //上传excel
     @ResponseBody
     @RequestMapping("/uploadExcel")
@@ -159,6 +210,34 @@ public class BuyTicketController {
             if (!f) return "0";
         }
         return "1";
+    }
+
+    //查看当前用户的当前订单的数量
+    @ResponseBody
+    @PostMapping("/getSingleTicketNumById")
+    public String getSingleTicketNumById(HttpSession httpSession,Model model,@RequestBody JsonNode jsonNode) {
+        this.jsonNode = jsonNode;
+        map = new HashMap<>();
+        int buyId = 22; //模拟当前登陆的用户
+        if(httpSession.getAttribute("userId")!=null) buyId= (int) httpSession.getAttribute("userId");
+//        buyId = 22; //模拟当前登陆的用户
+        int flightId = 0;
+        try {
+            flightId = getInt("flightId");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "0";
+        }
+        if (flightId == 0) return "0";
+        int re = buyTicketService.getSingleTicketNumById(buyId,flightId);
+        String result = "0";
+        try {
+            result = String.valueOf(re);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "0";
+        }
+        return result;
     }
 
     //下载excel模板文件

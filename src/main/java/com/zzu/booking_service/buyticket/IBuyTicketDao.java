@@ -8,6 +8,7 @@ import com.zzu.entity.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -31,5 +32,20 @@ public interface IBuyTicketDao {
     public int insertUser(User user);
 
     public List<AnnounceShow> selectAnnounce(@Param("startTime") String startTime,@Param("endTime")String endTime,@Param("searchString")String searchString);
+
+    public BigDecimal getPriceById(@Param("id") int id);
+
+    public int getStatusById(@Param("id") int id);
+
+    public int decFlightNum(@Param("kind") String kind,@Param("num") int num,@Param("flightId") int flightId);
+
+    public int addFlightNum(@Param("kind") String kind,@Param("num") int num,@Param("flightId") int flightId);
+
+    public int insetTicket(@Param("flightId") int flightId,@Param("buyUserId") int buyUserId,@Param("type") int type,@Param("price") BigDecimal price,@Param("userId") int userId,@Param("onTime") String onTime);
+
+    public int getFlightNum(@Param("kind")String kind,@Param("id")int id);
+
+    public int getSingleTicketNumById(@Param("id")int id,@Param("flightId")int flightId);
+
 
 }

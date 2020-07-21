@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <table onselectstart="return false" οnselect="document.selection.empty()" id="luruInfoShowTable" class="table table-striped">
-    <caption>已录入的信息(共 ${list.size()} 个结果 <span style="color: red;"></span> )</caption>
+    <caption>已录入的信息(共 ${list.size()} 个结果 <span style="color: red;"></span> )<a onclick="flushluruInfo()"  style="margin-left: 20px; cursor: pointer;">清空信息</a></caption>
     <thead>
     <tr>
         <th class="col-lg-2">电话号码</th>
