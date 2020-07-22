@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,16 +31,39 @@ public class TicketController {
         return iticketService.getTicketById(id);
     }
 
-    @PostMapping("/getTicketOfOne")    //  通过用户customer的id 获取机票ticket信息
+    @PostMapping("/getTicketOfOne")    //  通过ticket表的travel_agency 获取机票ticket信息
     @ResponseBody
-    public List<TicketInfo> getTicketOfOne(int customer){
-        return iticketService.getTicketOfOne(customer);
+    public List<TicketInfo> getTicketOfOne(HttpSession httpSession){
+        List<TicketInfo> list = new ArrayList<>();
+        TicketInfo ticketInfo = new TicketInfo();
+        int customer;
+        if(httpSession.getAttribute("userId")!=null){
+            customer= (int) httpSession.getAttribute("userId");
+            list = iticketService.getTicketOfOne(customer);
+        }
+        else{
+            ticketInfo.setTicketId(0);
+            list.add(ticketInfo);
+        }
+
+        return list;
     }
 
-    @PostMapping("/getTicketByTel")    //  通过用户customer的id 获取机票ticket信息
+    @PostMapping("/getTicketByTel")    //  通过用户customer的id 电话号码 获取机票ticket信息
     @ResponseBody
-    public List<TicketInfo> getTicketByTel(String tel){
-        return iticketService.getTicketByTel(tel);
+    public List<TicketInfo> getTicketByTel(HttpSession httpSession){
+        List<TicketInfo> list = new ArrayList<>();
+        TicketInfo ticketInfo = new TicketInfo();
+        String tel="";
+        if(httpSession.getAttribute("tel")!=null){
+            tel= (String) httpSession.getAttribute("tel");
+            list = iticketService.getTicketByTel(tel);
+        }
+        else{
+            ticketInfo.setTicketId(0);
+            list.add(ticketInfo);
+        }
+        return list;
     }
 
     @PostMapping("/printTicket")    //  取票，即修改机票的状态

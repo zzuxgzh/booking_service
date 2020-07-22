@@ -1,6 +1,5 @@
 package com.zzu.entity;
 
-import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -16,8 +15,8 @@ public class TicketInfo {
     private String source_location;        // 出发地点location 全称
     private String target_name;         // 目的地name
     private String target_location;      // 目的地，location
-    private Date strattime;       // 预计飞机起飞时间
-    private Date preendtime;      //  预计到达时间
+    private String strattime;       // 预计飞机起飞时间
+    private String preendtime;      //  预计到达时间
     private int status;          // 机票状态
 
     public int getTicketId() {
@@ -52,6 +51,14 @@ public class TicketInfo {
         this.source_name = source_name;
     }
 
+    public String getSource_location() {
+        return source_location;
+    }
+
+    public void setSource_location(String source_location) {
+        this.source_location = source_location;
+    }
+
     public String getTarget_name() {
         return target_name;
     }
@@ -60,19 +67,27 @@ public class TicketInfo {
         this.target_name = target_name;
     }
 
-    public Date getStrattime() {
+    public String getTarget_location() {
+        return target_location;
+    }
+
+    public void setTarget_location(String target_location) {
+        this.target_location = target_location;
+    }
+
+    public String getStrattime() {
         return strattime;
     }
 
-    public void setStrattime(Date strattime) {
+    public void setStrattime(String strattime) {
         this.strattime = strattime;
     }
 
-    public Date getPreendtime() {
+    public String getPreendtime() {
         return preendtime;
     }
 
-    public void setPreendtime(Date preendtime) {
+    public void setPreendtime(String preendtime) {
         this.preendtime = preendtime;
     }
 
@@ -82,22 +97,6 @@ public class TicketInfo {
 
     public void setStatus(int status) {
         this.status = status;
-    }
-
-    public String getSource_location() {
-        return source_location;
-    }
-
-    public void setSource_location(String source_location) {
-        this.source_location = source_location;
-    }
-
-    public String getTarget_location() {
-        return target_location;
-    }
-
-    public void setTarget_location(String target_location) {
-        this.target_location = target_location;
     }
 
     @Override
@@ -110,8 +109,8 @@ public class TicketInfo {
                 ", source_location='" + source_location + '\'' +
                 ", target_name='" + target_name + '\'' +
                 ", target_location='" + target_location + '\'' +
-                ", strattime=" + strattime +
-                ", preendtime=" + preendtime +
+                ", strattime='" + strattime + '\'' +
+                ", preendtime='" + preendtime + '\'' +
                 ", status=" + status +
                 '}';
     }

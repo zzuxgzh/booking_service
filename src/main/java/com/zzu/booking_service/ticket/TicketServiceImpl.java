@@ -7,7 +7,10 @@ import com.zzu.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -39,6 +42,9 @@ public class TicketServiceImpl implements IticketService{
        Airdrome source_airdrome = new Airdrome();     // 机票上对应的出发机场
        Airdrome target_airdrome = new Airdrome();     // 机票上对应的目的机场
 
+       Date date = new Date();
+       Calendar calendar = Calendar.getInstance();
+
        ticketInfo.setTicketId(ticket.getTicketId());        // id
        user = iUserDao.getUserById(ticket.getCustomer());     // 机票上对应的用户信息
        ticketInfo.setCustomer_name(user.getName());            // 用户名，机票的拥有者
@@ -46,38 +52,45 @@ public class TicketServiceImpl implements IticketService{
        flight = iFlightDao.getFlightById(ticket.getFlight());             //  机票上对应的flight
 
        source_airdrome = iAirdromeDao.getAirdromeById(flight.getSource());        // 机票上对应的出发机场source_airdrome信息
-       //System.out.println("source_airdrome:"+source_airdrome.toString());
+
        ticketInfo.setSource_name(source_airdrome.getName());       // 出发地点， name
        ticketInfo.setSource_location(getFullNameById(source_airdrome.getLocation()));   // 机票上出发地的全称location
-       //System.out.println("出发地ticketInfo:"+ticketInfo.getSource_location());
-
        target_airdrome = iAirdromeDao.getAirdromeById(flight.getTarget());         // 机票上对应的目的机场tartget_airdrome信息
-       // System.out.println("target_airdrome:"+target_airdrome);
        ticketInfo.setTarget_name(target_airdrome.getName());    // 目的地点,name
        ticketInfo.setTarget_location(getFullNameById(target_airdrome.getLocation())); // 机票上目的地的全称location
-       // System.out.println("目的地tickeInfo："+ticketInfo.getTarget_location());
-       //System.out.println();
-       // 时间类型似乎还需要相互转换
-       ticketInfo.setStrattime(flight.getStarttime());       // 预计飞机起飞时间  ，
-//       tool.dealDateFormat(flight.getStarttime())
 
-       ticketInfo.setPreendtime(flight.getPreendtime());         // 预计飞机到达时间
+       // 转换时间类型，控制格式并消除时间差8小时
+       // 预计飞机起飞时间  ，
+       date = flight.getStarttime();
+       calendar.setTime(date);
+       calendar.add(Calendar.HOUR,-8);
+
+       DateFormat format = DateFormat.getDateTimeInstance();//可以精确到时分秒
+       ticketInfo.setStrattime(format.format(calendar.getTime()));
+
+       // 预计飞机到达时间
+       date = flight.getPreendtime();
+       calendar.setTime(date);
+       calendar.add(Calendar.HOUR,-8);
+       ticketInfo.setPreendtime(format.format(calendar.getTime()));
+       //
        ticketInfo.setStatus(ticket.getStatus());     // 飞机状态
-
-
 
         return ticketInfo;
     }
 
     @Override              // 根据用户traven_agency的id 查询 获取机票ticket信息
     public List<TicketInfo> getTicketOfOne(int customer) {
-        List<Ticket> ticketList = ticketDao.getSomeTicket(customer);       // 数据库里的ticket信息
+        List<Ticket> ticketList = ticketDao.getSomeTicket(customer);       // 数据库里的ticket信息，是tarve_agency
         //List<Ticket> ticketList = ticketDao.getTicketOfOne(customer);       // 数据库里的ticket信息
         List<TicketInfo> ticketInfoList = new ArrayList<>();              //  ticket的详细信息list
         User user = new User();           // 机票上的user 即 customer信息
         Flight flight = new Flight();      // 对应的flight航班信息
         Airdrome source_airdrome = new Airdrome();     // 机票上对应的出发机场
         Airdrome target_airdrome = new Airdrome();     // 机票上对应的目的机场
+
+        Date date = new Date();
+        Calendar calendar = Calendar.getInstance();
          /*
                 private int ticketId;     // 机票ticket的id
                 private String customer_name;     // 用户名，机票的拥有者
@@ -91,7 +104,6 @@ public class TicketServiceImpl implements IticketService{
                 private int status;          // 机票状态
                  status
             * */
-         // 这些数据的查询都没有做为空的异常处理，因为数据库有外键约束，不能为空
         for (Ticket ticket:ticketList) {
             TicketInfo ticketInfo = new TicketInfo();
             //System.out.println();
@@ -102,24 +114,26 @@ public class TicketServiceImpl implements IticketService{
             flight = iFlightDao.getFlightById(ticket.getFlight());             //  机票上对应的flight
 
             source_airdrome = iAirdromeDao.getAirdromeById(flight.getSource());        // 机票上对应的出发机场source_airdrome信息
-            //System.out.println("source_airdrome:"+source_airdrome.toString());
             ticketInfo.setSource_name(source_airdrome.getName());       // 出发地点， name
             ticketInfo.setSource_location(getFullNameById(source_airdrome.getLocation()));   // 机票上出发地的全称location
-            //System.out.println("出发地ticketInfo:"+ticketInfo.getSource_location());
-
             target_airdrome = iAirdromeDao.getAirdromeById(flight.getTarget());         // 机票上对应的目的机场tartget_airdrome信息
-           // System.out.println("target_airdrome:"+target_airdrome);
             ticketInfo.setTarget_name(target_airdrome.getName());    // 目的地点,name
             ticketInfo.setTarget_location(getFullNameById(target_airdrome.getLocation())); // 机票上目的地的全称location
-           // System.out.println("目的地tickeInfo："+ticketInfo.getTarget_location());
-            //System.out.println();
-            // 时间类型似乎还需要相互转换
-            ticketInfo.setStrattime(flight.getStarttime());       // 预计飞机起飞时间  ，
-            ticketInfo.setPreendtime(flight.getPreendtime());         // 预计飞机到达时间
-            ticketInfo.setStatus(ticket.getStatus());     // 飞机状态
 
-            //System.out.println("tickInfo:"+ticketInfo);
-            //System.out.println();
+            date = flight.getStarttime();
+            calendar.setTime(date);
+            calendar.add(Calendar.HOUR,-8);
+
+            DateFormat format = DateFormat.getDateTimeInstance();//可以精确到时分秒
+            ticketInfo.setStrattime(format.format(calendar.getTime()));
+
+            // 预计飞机到达时间
+            date = flight.getPreendtime();
+            calendar.setTime(date);
+            calendar.add(Calendar.HOUR,-8);
+            ticketInfo.setPreendtime(format.format(calendar.getTime()));
+            //
+            ticketInfo.setStatus(ticket.getStatus());     // 飞机状态
 
             // 将机票详细信息存入list
             ticketInfoList.add(ticketInfo);
@@ -131,24 +145,23 @@ public class TicketServiceImpl implements IticketService{
     public List<TicketInfo> getTicketByTel(String tel) {
        User user = new User();      // 根据电话号码tel查出的user
        user = iUserDao.getUserByTel(tel);
-       //System.out.println("user:"+user.toString());
 
        int customer=user.getUserId();
-
         List<Ticket> ticketList = ticketDao.getTicketByCus(customer);       // 数据库里的ticket信息
-        //List<Ticket> ticketList = ticketDao.getTicketOfOne(customer);       // 数据库里的ticket信息
         List<TicketInfo> ticketInfoList = new ArrayList<>();              //  ticket的详细信息list
         //User user = new User();           // 机票上的user 即 customer信息
         Flight flight = new Flight();      // 对应的flight航班信息
         Airdrome source_airdrome = new Airdrome();     // 机票上对应的出发机场
         Airdrome target_airdrome = new Airdrome();     // 机票上对应的目的机场
 
+        Date date = new Date();
+        Calendar calendar = Calendar.getInstance();
         //
         for (Ticket ticket:ticketList) {
             if(ticket.getStatus()!=0){  // 未出票的才能取票
                 continue;           // 忽略其他状态的机票
             }
-            System.out.println("ticket:"+ticket);
+            //System.out.println("ticket:"+ticket);
             TicketInfo ticketInfo = new TicketInfo();
             //System.out.println();
             ticketInfo.setTicketId(ticket.getTicketId());        // id
@@ -156,26 +169,28 @@ public class TicketServiceImpl implements IticketService{
             ticketInfo.setCustomer_name(user.getName());            // 用户名，机票的拥有者
             ticketInfo.setFlight(ticket.getFlight());             // 飞机 id 即航班号
             flight = iFlightDao.getFlightById(ticket.getFlight());             //  机票上对应的flight
-
             source_airdrome = iAirdromeDao.getAirdromeById(flight.getSource());        // 机票上对应的出发机场source_airdrome信息
-            //System.out.println("source_airdrome:"+source_airdrome.toString());
             ticketInfo.setSource_name(source_airdrome.getName());       // 出发地点， name
             ticketInfo.setSource_location(getFullNameById(source_airdrome.getLocation()));   // 机票上出发地的全称location
-            //System.out.println("出发地ticketInfo:"+ticketInfo.getSource_location());
 
             target_airdrome = iAirdromeDao.getAirdromeById(flight.getTarget());         // 机票上对应的目的机场tartget_airdrome信息
-            // System.out.println("target_airdrome:"+target_airdrome);
+
             ticketInfo.setTarget_name(target_airdrome.getName());    // 目的地点,name
             ticketInfo.setTarget_location(getFullNameById(target_airdrome.getLocation())); // 机票上目的地的全称location
-            // System.out.println("目的地tickeInfo："+ticketInfo.getTarget_location());
-            //System.out.println();
-            // 时间类型似乎还需要相互转换
-            ticketInfo.setStrattime(flight.getStarttime());       // 预计飞机起飞时间  ，
-            ticketInfo.setPreendtime(flight.getPreendtime());         // 预计飞机到达时间
-            ticketInfo.setStatus(ticket.getStatus());     // 飞机状态
+            date = flight.getStarttime();
+            calendar.setTime(date);
+            calendar.add(Calendar.HOUR,-8);
 
-            //System.out.println("tickInfo:"+ticketInfo);
-            //System.out.println();
+            DateFormat format = DateFormat.getDateTimeInstance();//可以精确到时分秒
+            ticketInfo.setStrattime(format.format(calendar.getTime()));
+
+            // 预计飞机到达时间
+            date = flight.getPreendtime();
+            calendar.setTime(date);
+            calendar.add(Calendar.HOUR,-8);
+            ticketInfo.setPreendtime(format.format(calendar.getTime()));
+            //
+            ticketInfo.setStatus(ticket.getStatus());     // 飞机状态
 
             // 将机票详细信息存入list
             ticketInfoList.add(ticketInfo);
@@ -204,8 +219,6 @@ public class TicketServiceImpl implements IticketService{
         String id_tmp = "";
         Location rg_0 = null;
         Location ret_rg = iLocationDao.getLocationByRegionCode(id);
-        //System.out.println("ById_location:"+ret_rg.toString());
-        //System.out.println();
         if(ret_rg.getStage() == 3){
             id_tmp = id.substring(0, 4)+"00";
             rg_0 =  iLocationDao.getLocationByRegionCode(id_tmp);
@@ -229,23 +242,6 @@ public class TicketServiceImpl implements IticketService{
         ticketDao.update(ticket);
         return "打印成功，退出系统";
     }
-
-   /* @Override
-    public List<Ticket> getAllTickets() {
-        return ticketDao.getAllTickets();
-    }*/
-
-   /* @Override
-    public User getUserById(int id) {
-        return iUserDao.getUserById(id);
-    }
-
-    @Override
-    public Flight getFlightById(int id) {
-        return iFlightDao.getFlightById(id);
-    }*/
-
-
 
 
 

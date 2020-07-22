@@ -12,7 +12,7 @@ public interface IticketService {
 
     public TicketInfo getTicketById(int id);    //根据机票id 查询机票详细信息
 
-    public List<TicketInfo> getTicketOfOne(int customer);   // 根据customer获取
+    public List<TicketInfo> getTicketOfOne(int customer);   // 根据 travel_agency 获取
 
     public List<TicketInfo> getTicketByTel(String tel);       // 根据电话号码查询用户拥有的机票
 
