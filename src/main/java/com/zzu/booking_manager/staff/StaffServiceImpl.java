@@ -74,6 +74,7 @@ public class StaffServiceImpl implements IStaffService {
 
     @Override
     public List<Staff> getSomeStaff(String param) {
+
         return isd.getSomeStaff("%"+param+"%");
     }
 

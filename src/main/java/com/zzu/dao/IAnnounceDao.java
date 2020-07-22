@@ -15,9 +15,12 @@ public interface IAnnounceDao {
     List<Announce> getLimitAnnounces(@Param("size") int size);
     //返回前端用这几个
     AnnOutParam getAnnById(@Param("id") int id);
+    List<AnnOutParam> getAnnByAir(@Param("id") int id);
     List<AnnOutParam> getAllAnn();
     List<AnnOutParam> getLimitAnn(@Param("size") int size);
+    List<AnnOutParam> getSomeAnn(@Param("param") String param);
     int insert(Announce anno);
+
     int insertSelective(Announce anno);
     int deleteById(@Param("id")int id);
     int update(Announce anno);

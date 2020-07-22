@@ -11,22 +11,37 @@
         select * from announce;
     </select>
 
+
+    <select id="getSomeAnn" resultType="com.zzu.booking_manager.announce.AnnOutParam">
+        select ann_id, staf_id, drom_id, date, content, announce.status, airdrome.name, location from announce,airdrome,staff
+        where drom_id = air_id and staff_id=staf_id
+        <if test="param != null">
+            and (staff.name like #{param} or airdrome.name like #{param})
+        </if>
+
+    </select>
+
     <select id="getLimitAnnounces" resultType="com.zzu.entity.Announce">
         select * from announce LIMIT #{size}
     </select>
 
-    <select id="getAnnById" resultType="com.zzu.entity.Announce">
-        select ann_id, staf_id, drom_id, date, content, status, name, location from announce,airdrome
+    <select id="getAnnById" resultType="com.zzu.booking_manager.announce.AnnOutParam">
+        select ann_id, staf_id, drom_id, date, content, announce.status, name, location from announce,airdrome
         where ann_id=#{id} and drom_id = air_id;
     </select>
 
-    <select id="getAllAnn" resultType="com.zzu.entity.Announce">
-        select ann_id, staf_id, drom_id, date, content, status, name, location from announce,airdrome
-        where drom_id = air_id;
+    <select id="getAnnByAir" resultType="com.zzu.booking_manager.announce.AnnOutParam">
+        select ann_id, staf_id, drom_id, date, content, announce.status, name, location from announce,airdrome
+        where drom_id=#{id} and drom_id = air_id;
     </select>
 
-    <select id="getLimitAnn" resultType="com.zzu.entity.Announce">
-        select ann_id, staf_id, drom_id, date, content, status, name, location from announce,airdrome
+    <select id="getAllAnn" resultType="com.zzu.booking_manager.announce.AnnOutParam">
+        select ann_id, staf_id, drom_id, date, content, announce.status, name, location from announce,airdrome
+        where drom_id = air_id ;
+    </select>
+
+    <select id="getLimitAnn" resultType="com.zzu.booking_manager.announce.AnnOutParam">
+        select ann_id, staf_id, drom_id, date, content, announce.status, name, location from announce,airdrome
         where ann_id=#{id} and drom_id = air_id LIMIT #{size};
     </select>
 
@@ -38,25 +53,19 @@
     <insert id="insertSelective" parameterType="com.zzu.entity.Announce">
         insert into announce
         <trim prefix="(" suffix=")" suffixOverrides="," >
-            <if test="name != null" >
-                name,
+            <if test="staf_id != null" >
+                staf_id,
             </if>
-            <if test="pwd != null" >
-                pwd,
+            <if test="drom_id != null" >
+               drom_id,
             </if>
-            <if test="tel != null" >
-                tel,
+            <if test="date != null" >
+                date,
             </if>
-            <if test="IDCard != null" >
-                ID_card,
+            <if test="content != null" >
+                content,
             </if>
-            <if test="gender != null" >
-                gender,
-            </if>
-            <if test="company != null" >
-                company,
-            </if>
-            <if test="status != null" >
+            <if test="status!= null" >
                 status,
             </if>
         </trim>

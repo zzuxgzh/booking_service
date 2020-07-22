@@ -15,6 +15,7 @@ public class LocationServiceImpl implements ILocationService {
     @Autowired
     private ILocationDao ild;
 
+
     @Override
     public List<LocationParam> getLocationsTree() {
         List<Location> locations = ild.getAllLocations();

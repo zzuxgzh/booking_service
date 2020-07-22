@@ -19,10 +19,11 @@ public class FlightController {
 
     @Autowired
     private IFlightService ifs;
+    @Autowired FlightServiceImpl fsi;
 
     @ResponseBody
     @PostMapping("insertFlight")
-    public String insertFlight(Flight flight,@DateTimeFormat(pattern = "yyyy-MM-dd") Date start,@DateTimeFormat(pattern = "yyyy-MM-dd") Date preend){
+    public String insertFlight(Flight flight,@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss ") Date start,@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date preend){
         flight.setStarttime(start);
         flight.setPreendtime(preend);
         System.out.println("----insertFlight--->"+flight.toString());
@@ -30,9 +31,40 @@ public class FlightController {
     }
 
     @ResponseBody
+    @PostMapping("updateFlight")
+    public String updateFlight(Flight flight,@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss ") Date start,@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date preend){
+        flight.setStarttime(start);
+        flight.setPreendtime(preend);
+        System.out.println("----upFlight--->"+flight.toString());
+        return ifs.update(flight);
+    }
+
+    @ResponseBody
     @GetMapping("getAllFlights")
     public List<FlightOutParam> getAllFlights(){
         return ifs.getAllFlights();
+    }
+
+    @ResponseBody
+    @GetMapping("getAllFlightsByStatus")
+    public List<FlightOutParam> getAllFlightsByStatus(int status,int sourceId){
+
+        return fsi.getFlightByStatus(status,sourceId);
+    }
+
+    @ResponseBody
+    @GetMapping("getSomeFli")
+    public List<FlightOutParam> getSomeFli(String param) {
+
+        return ifs.getSomeFli(param);
+    }
+
+
+    @ResponseBody
+    @GetMapping("getSomeFli2")
+    public List<FlightOutParam> getSomeFli2(String param) {
+
+        return ifs.getSomeFli2(param);
     }
 
     @ResponseBody
