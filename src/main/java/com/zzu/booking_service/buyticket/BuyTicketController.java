@@ -97,7 +97,7 @@ public class BuyTicketController {
 
     @ResponseBody
     @PostMapping("/insetSingleInfo")
-    public String singleInfo(HttpSession httpSession,Model model,@RequestBody JsonNode jsonNode) {
+    public String singleInfo(HttpServletRequest request,HttpSession httpSession,Model model,@RequestBody JsonNode jsonNode) {
         this.jsonNode = jsonNode;
         map = new HashMap<>();
         User user = new User();
@@ -107,7 +107,7 @@ public class BuyTicketController {
         user.setCompany(getString("userinfoCompane"));
         user.setGender(getInt("sex"));
         int buyId = 22; //模拟当前登陆的用户
-        if(httpSession.getAttribute("userId")!=null) buyId= (int) httpSession.getAttribute("userId");
+        if(cookie.getValue("userId",request)!=null) buyId= (int) cookie.getValue("userId",request);
 //        buyId = 22; //模拟当前登陆的用户
         boolean re = buyTicketService.intoSingleInfo(buyId,user);
         if (re) return "1";
@@ -115,12 +115,12 @@ public class BuyTicketController {
     }
 
     @PostMapping("/refreshInfoTable")
-    public String refreshInfoTable(HttpSession httpSession,Model model,@RequestBody JsonNode jsonNode) {
+    public String refreshInfoTable(HttpServletRequest request,HttpSession httpSession,Model model,@RequestBody JsonNode jsonNode) {
         this.jsonNode = jsonNode;
         map = new HashMap<>();
 
         int buyId = 22; //模拟当前登陆的用户
-        if(httpSession.getAttribute("userId")!=null) buyId= (int) httpSession.getAttribute("userId");
+        if(cookie.getValue("userId",request)!=null) buyId= (int) cookie.getValue("userId",request);
 //        buyId = 22; //模拟当前登陆的用户
         List<User> list = buyTicketService.getInfo(buyId);
         model.addAttribute("list",list);
@@ -130,11 +130,11 @@ public class BuyTicketController {
 
     @ResponseBody
     @PostMapping("/getInfoNumber")
-    public String getInfoNumber(HttpSession httpSession,Model model,@RequestBody JsonNode jsonNode) {
+    public String getInfoNumber(HttpServletRequest request,HttpSession httpSession,Model model,@RequestBody JsonNode jsonNode) {
         this.jsonNode = jsonNode;
         map = new HashMap<>();
         int buyId = 22; //模拟当前登陆的用户
-        if(httpSession.getAttribute("userId")!=null) buyId= (int) httpSession.getAttribute("userId");
+        if(cookie.getValue("userId",request)!=null) buyId= (int) cookie.getValue("userId",request);
 //        buyId = 22; //模拟当前登陆的用户
         List<User> list = buyTicketService.getInfo(buyId);
         return String.valueOf(list.size());
@@ -143,11 +143,11 @@ public class BuyTicketController {
     //清空当前用户已录入的信息
     @ResponseBody
     @PostMapping("/flushInfo")
-    public String flushInfo(HttpSession httpSession,Model model,@RequestBody JsonNode jsonNode) {
+    public String flushInfo(HttpServletRequest request,HttpSession httpSession,Model model,@RequestBody JsonNode jsonNode) {
         this.jsonNode = jsonNode;
         map = new HashMap<>();
         int buyId = 22; //模拟当前登陆的用户
-        if(httpSession.getAttribute("userId")!=null) buyId= (int) httpSession.getAttribute("userId");
+        if(cookie.getValue("userId",request)!=null) buyId= (int) cookie.getValue("userId",request);
 //        buyId = 22; //模拟当前登陆的用户
         boolean re = buyTicketService.flushInfo(buyId);
         if (re) return "1";
@@ -157,7 +157,7 @@ public class BuyTicketController {
     //进行购票操作
     @ResponseBody
     @PostMapping("/buyTicket")
-    public String buyTicket(HttpSession httpSession,Model model,@RequestBody JsonNode jsonNode) {
+    public String buyTicket(HttpServletRequest request,HttpSession httpSession,Model model,@RequestBody JsonNode jsonNode) {
         this.jsonNode = jsonNode;
 
         String kind = getString("kind");
@@ -165,7 +165,7 @@ public class BuyTicketController {
         if(kind.trim().equals("") || flightId.trim().equals("")) return "0";
 
         int buyId = 22; //模拟当前登陆的用户
-        if(httpSession.getAttribute("userId")!=null) buyId= (int) httpSession.getAttribute("userId");
+        if(cookie.getValue("userId",request)!=null) buyId= (int) cookie.getValue("userId",request);
 //        buyId = 22; //模拟当前登陆的用户
         int flight = 0;
         try {
@@ -308,7 +308,7 @@ public class BuyTicketController {
     //上传excel
     @ResponseBody
     @RequestMapping("/uploadExcel")
-    public String uploadExcel(HttpSession httpSession,@RequestParam(value = "file") MultipartFile excelFile, HttpServletRequest req, HttpServletResponse resp){
+    public String uploadExcel(HttpServletRequest request,HttpSession httpSession,@RequestParam(value = "file") MultipartFile excelFile, HttpServletRequest req, HttpServletResponse resp){
         Map<String, Object> param = new HashMap<String, Object>();
         List<User> list = new ArrayList<User>();
         try {
@@ -334,7 +334,7 @@ public class BuyTicketController {
         System.out.println(list.toString());
         ////////////后面写代码，给他们分别购票
         int buyId = 22; //模拟当前登陆的用户
-        if(httpSession.getAttribute("userId")!=null) buyId= (int) httpSession.getAttribute("userId");
+        if(cookie.getValue("userId",request)!=null) buyId= (int) cookie.getValue("userId",request);
 //        buyId = 22; //模拟当前登陆的用户
         for (User user : list) {
             boolean f = buyTicketService.intoSingleInfo(buyId,user);
@@ -346,11 +346,11 @@ public class BuyTicketController {
     //查看当前用户的当前订单的数量
     @ResponseBody
     @PostMapping("/getSingleTicketNumById")
-    public String getSingleTicketNumById(HttpSession httpSession,Model model,@RequestBody JsonNode jsonNode) {
+    public String getSingleTicketNumById(HttpServletRequest request,HttpSession httpSession,Model model,@RequestBody JsonNode jsonNode) {
         this.jsonNode = jsonNode;
         map = new HashMap<>();
         int buyId = 22; //模拟当前登陆的用户
-        if(httpSession.getAttribute("userId")!=null) buyId= (int) httpSession.getAttribute("userId");
+        if(cookie.getValue("userId",request)!=null) buyId= (int) cookie.getValue("userId",request);
 //        buyId = 22; //模拟当前登陆的用户
         int flightId = 0;
         try {
