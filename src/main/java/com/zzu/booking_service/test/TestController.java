@@ -11,17 +11,20 @@ import com.zzu.booking_service.bean.test.User;
 import com.zzu.booking_service.utl.POIUtils;
 import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.*;
 import java.util.*;
 
+//@CrossOrigin(allowCredentials ="true",allowedHeaders = "*")//设置是否允许客户端发送cookie信息。默认是false
 @Controller
 @RequestMapping("/data/test")
 public class TestController {
@@ -56,12 +59,20 @@ public class TestController {
 
     //返回数据 post方法
     @ResponseBody
-    @PostMapping(value = "/insert")
-    public String insert(@RequestBody JsonNode jsonNode, HttpSession httpSession) throws JsonProcessingException {
+    @GetMapping(value = "/insert")
+    public String insert(HttpServletRequest request, HttpSession httpSession,String id,String  myAge) throws JsonProcessingException {
 
-        String id = jsonNode.path("id").toString();
-        String myAge = jsonNode.path("myAge").toString();
-        System.out.println(id+myAge);
+        Cookie[] cookies = request.getCookies();
+        for (Cookie cookie : cookies) {
+            System.out.print(cookie.getValue()+".");
+        }
+
+        System.out.println(request.getRequestedSessionId());
+        System.out.println(httpSession.getId());
+//        @RequestBody JsonNode jsonNode
+//        String id = jsonNode.path("id").toString();
+//        String myAge = jsonNode.path("myAge").toString();
+                System.out.println(id+myAge);
 
 
         String s = (String) httpSession.getAttribute("name");
@@ -203,5 +214,44 @@ public class TestController {
 
     }
 
+    //测试cookie
+    @ResponseBody
+    @RequestMapping("/setCookie")
+    public String setCookie(HttpServletRequest request,HttpServletResponse response){
+        Cookie cookie = new Cookie("onCode","123456");
+        Cookie cookie1 = new Cookie("code","654321");
+
+        //设置cookie 可访问的资源路径
+        cookie.setPath(request.getContextPath()+"/data");
+        cookie1.setPath(request.getContextPath()+"/data/test");
+
+        //设置cookie 的有效期，值为一个整数值，单位为秒
+        // >0 存放在客户端的硬盘
+        // <=0  存储在浏览器的缓存中
+        // 不设置 在 会话结束后关闭
+        cookie.setMaxAge(60*60);    //1小时
+        cookie1.setMaxAge(60);      //1分钟
+
+
+        response.addCookie(cookie); //将cookie 加入 响应中，之后才能使用
+        response.addCookie(cookie1);
+
+
+        return "yes";
+    }
+
+    //测试cookie
+    @ResponseBody
+    @RequestMapping("/getCookie")
+    public String getCookie(HttpServletRequest request,HttpServletResponse response) {
+
+        Cookie[] cookies = request.getCookies();
+        for (Cookie cookie : cookies) {
+            System.out.println(cookie.getName() + "." + cookie.getValue());
+            
+        }
+
+        return "yes";
+    }
 
 }

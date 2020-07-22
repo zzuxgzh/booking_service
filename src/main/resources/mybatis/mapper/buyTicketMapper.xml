@@ -74,4 +74,24 @@ where tel=#{tel}
     <select id="getSingleTicketNumById" resultType="int">
         select count(*) from ticket where travel_agency=#{id} and flight=#{flightId};
     </select>
+
+    <select id="getStatusByMobile" resultType="int">
+        select status from user where tel=#{tel};
+    </select>
+
+    <insert id="insertUserRegister" parameterType="com.zzu.entity.User">
+        insert into user values(null,#{name},#{pwd},#{tel},#{IDCard},#{gender},#{company},#{status});
+    </insert>
+    <update id="updateUserRegister" parameterType="com.zzu.entity.User">
+        update user set name=#{name},pwd=#{pwd},ID_card=#{IDCard},gender=#{gender},company=#{company},status=#{status}
+        where tel=#{tel};
+    </update>
+<!--    name,pwd,tel,IDCard,gender,company,status-->
+    <select id="selectUserExist" resultType="int">
+        select status from user where tel=#{tel} and pwd=#{pwd};
+    </select>
+
+    <select id="getUserByMobile" resultType="com.zzu.entity.User">
+        select * from user where tel=#{tel};
+    </select>
 </mapper>

@@ -35,4 +35,16 @@ public interface IBuyTicketService {
 
     //判断该用户对于该订单共购买了几次票
     public int getSingleTicketNumById(int id,int flightId);
+
+    // 0 不存在 1 存在但是-1 2 存在
+    public int getStatusByMobile(String tel);
+
+    // 0 失败 1 成功
+    public int insertUserRegister(User user);
+
+    // 0 失败 1 成功
+    public int selectUserExist( String tel,String pwd);
+
+    // null 没查到
+    public User getUserByMobile(String tel);
 }

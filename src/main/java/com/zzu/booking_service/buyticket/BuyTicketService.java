@@ -6,6 +6,7 @@ import com.zzu.booking_service.test.ITestDao;
 import com.zzu.booking_service.test.ITestService;
 import com.zzu.config.RabbitMQConfig;
 import com.zzu.entity.User;
+import com.zzu.tool.CookieUtil;
 import com.zzu.tool.SmsTool;
 import com.zzu.tool.TicketStrategy;
 import org.springframework.amqp.AmqpException;
@@ -23,6 +24,8 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 public class BuyTicketService implements IBuyTicketService {
+
+
 
     @Autowired
     IBuyTicketDao buyTicketDao;
@@ -271,5 +274,69 @@ public class BuyTicketService implements IBuyTicketService {
     @Override
     public int getSingleTicketNumById(int id, int flightId) {
         return buyTicketDao.getSingleTicketNumById(id,flightId);
+    }
+
+    // 0 不存在    1 存在但是-1   2 存在
+    @Override
+    public int getStatusByMobile(String tel) {
+        int status = -1;
+        try {
+            status = buyTicketDao.getStatusByMobile(tel);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
+        if (status == -1) { //说明存在，需要删除掉对应数据
+            return 1;
+        }else return 2;
+    }
+
+    // 0 失败 1 成功
+    @Override
+    public int insertUserRegister(User user) {
+        int re = 0;
+        int status = -2;
+        try {
+            status = buyTicketDao.getStatusByMobile(user.getTel());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println("status:"+status);
+        try {
+            if (status == -1){//说明只需要修改就可以了
+                re = buyTicketDao.updateUserRegister(user);
+            }else {
+                re = buyTicketDao.insertUserRegister(user);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
+        if (re == 1) return 1;
+        else return 0;
+    }
+
+    // 0 失败 1 成功
+    @Override
+    public int selectUserExist(String tel, String pwd) {
+        int re = 0;
+        try {
+            re = buyTicketDao.selectUserExist(tel,pwd);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
+        if (re == -1) return 0;
+        else return 1;
+    }
+
+    @Override
+    public User getUserByMobile(String tel) {
+        try {
+            return buyTicketDao.getUserByMobile(tel);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

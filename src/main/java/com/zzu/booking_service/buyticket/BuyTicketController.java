@@ -10,6 +10,8 @@ import com.zzu.booking_service.bean.test.SingleUser;
 import com.zzu.booking_service.test.ITestService;
 import com.zzu.booking_service.utl.POIUtils;
 import com.zzu.entity.User;
+import com.zzu.tool.CookieUtil;
+import com.zzu.tool.SmsTool;
 import org.apache.ibatis.annotations.ResultType;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,9 @@ import java.util.*;
 @Controller
 @RequestMapping("/data/buyticket")
 public class BuyTicketController {
+
+    @Autowired
+    CookieUtil cookie;
 
     @Autowired
     IBuyTicketService buyTicketService;
@@ -172,6 +177,132 @@ public class BuyTicketController {
         boolean re = buyTicketService.buyTicket(buyId,flight,kind);
         if (re) return "1";
         else return "0";
+    }
+
+    //发送验证码
+    @ResponseBody
+    @PostMapping("/getStatusByMobile")
+    public String getStatusByMobile(HttpServletRequest request,HttpServletResponse response,HttpSession httpSession,Model model,@RequestBody JsonNode jsonNode) {
+        this.jsonNode = jsonNode;
+
+        String tel = getString("tel");
+        int re = buyTicketService.getStatusByMobile(tel);
+        if(re != 2){
+            String cookieId = cookie.setCookie(request,response); //建立cookie，当作session使用
+            cookie.setValueById(cookieId,"onTel",tel);
+
+            String registerCode = SmsTool.getCode();
+            try {
+//                SmsTool.sendSms(tel,registerCode);
+            } catch (Exception e) {
+                e.printStackTrace();
+                re = 3; //3 代表验证码发送失败
+            }
+            System.out.println(registerCode);
+            cookie.setValueById(cookieId,"registerCode",registerCode);
+        }
+        return String.valueOf(re);
+
+    }
+
+    //注册用户
+    @ResponseBody
+    @PostMapping("/insertUserRegister")
+    public String insertUserRegister(HttpServletRequest request,HttpSession httpSession,Model model,@RequestBody JsonNode jsonNode) {
+        this.jsonNode = jsonNode;
+
+        String onCode = getString("onCode");
+        String registerCode = null;
+        try {
+            registerCode = (String) cookie.getValue("registerCode",request);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "0";
+        }
+        System.out.println(onCode + "." + registerCode);
+        if (!onCode.equals(registerCode)) return "0"; //验证码不对，返回0
+
+        User user = new User();
+//        name,pwd,tel,IDCard,gender,company,status
+        user.setName(getString("name"));
+        user.setPwd(getString("pwd"));
+        user.setTel((String) cookie.getValue("onTel",request));
+        user.setIDCard(getString("IDCard"));
+        user.setGender(getInt("gender"));
+        user.setCompany(getString("company"));
+        user.setStatus(getInt("status"));
+
+        int re = buyTicketService.insertUserRegister(user);
+        if(re == 1){//将信息存入cookie
+            cookie.setValue("userId",user.getUserId(),request);
+            cookie.setValue("tel",user.getTel(),request);
+        }
+        return String.valueOf(re);
+
+    }
+
+    //登陆用户 账号密码方式
+    @ResponseBody
+    @PostMapping("/loginByPwd")
+    public String loginByPwd(HttpServletRequest request,HttpServletResponse response,HttpSession httpSession,Model model,@RequestBody JsonNode jsonNode) {
+        this.jsonNode = jsonNode;
+
+        String tel = getString("tel");
+        String pwd = getString("pwd");
+
+        int re = buyTicketService.selectUserExist(tel,pwd);
+        if (re == 1) {
+            User user = buyTicketService.getUserByMobile(tel);
+            if (user == null) return "0";
+            //数据存入session中
+            String cookieId = cookie.setCookie(request,response);
+            cookie.setValueById(cookieId,"tel",tel);
+            cookie.setValueById(cookieId,"userId",user.getUserId());
+        }
+        return String.valueOf(re);
+
+    }
+
+    //登陆用户 验证码发送请求
+    @ResponseBody
+    @PostMapping("/sendLoginCode")
+    public String sendLoginCode(HttpServletRequest request,HttpServletResponse response,HttpSession httpSession,Model model,@RequestBody JsonNode jsonNode) {
+        this.jsonNode = jsonNode;
+
+        String onTel = getString("tel");
+        int re = buyTicketService.getStatusByMobile(onTel);
+        if(re != 0){
+            String cookieId = cookie.setCookie(request,response);
+            cookie.setValueById(cookieId,"onTel",onTel);
+            String loginCode = SmsTool.getCode();
+            try {
+                SmsTool.sendSms(onTel,loginCode);
+            } catch (Exception e) {
+                e.printStackTrace();
+                re = 3; //3 代表验证码发送失败
+            }
+            cookie.setValueById(cookieId,"loginCode",loginCode);
+        }
+        return String.valueOf(re);
+
+    }
+
+    //登陆用户 验证码方式
+    @ResponseBody
+    @PostMapping("/loginByCode")
+    public String loginByCode(HttpServletRequest request,HttpSession httpSession,Model model,@RequestBody JsonNode jsonNode) {
+        this.jsonNode = jsonNode;
+
+        String tel = (String) cookie.getValue("onTel",request);
+        String onCode = getString("onCode");
+        String loginCode = (String) cookie.getValue("loginCode",request);
+        if (!onCode.equals(loginCode)) return "0"; //验证码不对，返回0
+        User user = buyTicketService.getUserByMobile(tel);
+        //信息存储在session中
+        cookie.setValue("tel",tel,request);
+        cookie.setValue("userId",user.getUserId(),request);
+        return "1";
+
     }
 
     //上传excel

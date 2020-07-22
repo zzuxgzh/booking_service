@@ -47,5 +47,15 @@ public interface IBuyTicketDao {
 
     public int getSingleTicketNumById(@Param("id")int id,@Param("flightId")int flightId);
 
+    public int getStatusByMobile(@Param("tel") String tel);
+
+    public int insertUserRegister(User user);
+
+    public int updateUserRegister(User user);
+
+    public int selectUserExist(@Param("tel") String tel,@Param("pwd") String pwd);
+
+    public User getUserByMobile(@Param("tel") String tel);
+
 
 }

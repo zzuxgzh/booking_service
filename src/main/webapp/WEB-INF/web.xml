@@ -4,6 +4,8 @@
            xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
 		  http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
            version="2.5">
+    <!--自定义拦截器，每次请求拦截，设置session跨域以及维持session配置  -->
+<!--    <filter><filter-name>AuthorityInterceptor</filter-name><filter-class>com.zzu.booking_service.filter.AuthorityInterceptor</filter-class></filter><filter-mapping><filter-name>AuthorityInterceptor</filter-name><url-pattern>/*</url-pattern></filter-mapping>-->
 
 
 </web-app>
