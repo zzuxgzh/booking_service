@@ -109,4 +109,11 @@
         </set>
         where user_id = #{userId}
     </update>
+
+    <!-- 根据电话号码查询user -->
+    <select id="getUserByTel" resultType="com.zzu.entity.User">
+        select * from user where tel=#{tel};
+    </select>
+
+
 </mapper>

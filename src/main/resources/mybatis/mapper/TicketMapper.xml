@@ -97,4 +97,9 @@
         </set>
         where ticket_id = #{ticketId}
     </update>
+    <!-- 使用customer_id查询ticket -->
+    <select id="getTicketByCus" resultType="com.zzu.entity.Ticket">
+        select * from ticket where customer=#{customer};
+    </select>
+
 </mapper>

@@ -10,10 +10,12 @@ import java.util.List;
 public interface ITicketDao {
     Ticket getTicketById(@Param("id")int id);
     List<Ticket> getAllTickets();
-    List<Ticket> getSomeTicket(@Param("param")String param);//模糊查询
+    List<Ticket> getSomeTicket(@Param("param") int param);//模糊查询
     int insert(Ticket ticket);
     int insertSelective(Ticket ticket);
     int deleteById(@Param("id")int id);
     int update(Ticket ticket);
     int updateSelective(Ticket ticket);
+
+    List<Ticket> getTicketByCus(@Param("customer") int customer);  // 使用customer查询
 }

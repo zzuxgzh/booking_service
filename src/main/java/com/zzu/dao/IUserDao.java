@@ -16,4 +16,6 @@ public interface IUserDao {
     int deleteById(@Param("id")int id);
     int update(User user);
     int updateSelective(User user);
+
+    User getUserByTel(@Param("tel") String tel);    // 根据电话号码查询用户
 }
