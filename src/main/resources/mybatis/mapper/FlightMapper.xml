@@ -21,13 +21,15 @@
         select * from flight where flight_id=#{id};
     </select>
 
-    <select id="getFlightByStatus" resultType="com.zzu.booking_manager.flight.FlightOutParam">
-        select * from flight where status=#{status} and source = #{source};
-    </select>
+
 
 
     <select id="getSourceFlisByAirdome" resultType="com.zzu.booking_manager.flight.FlightOutParam">
         select * from flight where source = #{source};
+    </select>
+
+    <select id="getSourceFlisByTime" resultType="com.zzu.booking_manager.flight.FlightOutParam">
+        select * from flight where source = #{source} and ((status=0 or status=3) and  TIMESTAMPDIFF(SECOND,starttime,NOW())>0) ;
     </select>
 
     <select id="getTargetFlisByAirdome" resultType="com.zzu.booking_manager.flight.FlightOutParam">
@@ -37,19 +39,21 @@
 
 
     <select id="getSomeFli" resultType="com.zzu.booking_manager.flight.FlightOutParam">
-        select plane_id, source, target, starttime, preendtime, flight.status, economy_class, business_class, first_class, oprice,name as tName
-        from flight,airdrome where target=air_id
-        <if test="param != null">
-            and name like #{param}
-        </if>
-    </select>
+    select flight_id ,plane_id, source, target, starttime, preendtime, flight.status, economy_class, business_class, first_class, oprice,name as tName
+    from flight,airdrome where target=air_id  and source=#{source}
+    <if test="param != null">
+        and (name like #{param}or flight_id like #{param} or plane_id like #{param})
+    </if>
+</select>
+
     <select id="getSomeFli2" resultType="com.zzu.booking_manager.flight.FlightOutParam">
-        select plane_id, source, target, starttime, preendtime, flight.status, economy_class, business_class, first_class, oprice,name as tName
-        from flight,airdrome where target=air_id and flight.status=3
+        select flight_id ,plane_id, source, target, starttime, preendtime, flight.status, economy_class, business_class, first_class, oprice,name as tName
+        from flight,airdrome where target=air_id  and source=#{source} and ((flight.status=0 or flight.status=3) and  TIMESTAMPDIFF(SECOND,starttime,NOW())>0)
         <if test="param != null">
-            and name like #{param}
+            and (name like #{param}or flight_id like #{param} or plane_id like #{param})
         </if>
     </select>
+
 
     <insert id="insert" parameterType="com.zzu.entity.Flight">
         insert into flight(plane_id, source, target, starttime, preendtime, status, economy_class, business_class, first_class, oprice)
@@ -62,9 +66,10 @@
 
     <update id="update" parameterType="com.zzu.entity.Flight">
         update flight
-        set  preendtime = #{preendtime}, endtime = #{endtime}
+        set  preendtime = #{preendtime}, starttime = #{starttime},status=#{status}
         where flight_id = #{flightId}
     </update>
+
     <update id="updateSelective" parameterType="com.zzu.entity.Flight">
         update flight
         <set>

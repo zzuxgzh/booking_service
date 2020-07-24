@@ -5,10 +5,7 @@ import com.zzu.entity.Flight;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
@@ -23,16 +20,17 @@ public class FlightController {
 
     @ResponseBody
     @PostMapping("insertFlight")
-    public String insertFlight(Flight flight,@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss ") Date start,@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date preend){
+    public String insertFlight(Flight flight,@DateTimeFormat(pattern = "yyyy-MM-dd ") Date start,@DateTimeFormat(pattern = "yyyy-MM-dd ") Date preend){
         flight.setStarttime(start);
         flight.setPreendtime(preend);
         System.out.println("----insertFlight--->"+flight.toString());
         return ifs.insertFlight(flight);
     }
 
+
+    @RequestMapping(value="updateFlight1",method= RequestMethod.POST)
     @ResponseBody
-    @PostMapping("updateFlight")
-    public String updateFlight(Flight flight,@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss ") Date start,@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date preend){
+    public String updateFlight1(Flight flight,@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date start,@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date preend){
         flight.setStarttime(start);
         flight.setPreendtime(preend);
         System.out.println("----upFlight--->"+flight.toString());
@@ -42,29 +40,29 @@ public class FlightController {
     @ResponseBody
     @GetMapping("getAllFlights")
     public List<FlightOutParam> getAllFlights(){
-        return ifs.getAllFlights();
+        return fsi.getAllFlights();
     }
 
     @ResponseBody
-    @GetMapping("getAllFlightsByStatus")
-    public List<FlightOutParam> getAllFlightsByStatus(int status,int sourceId){
+    @GetMapping("getAllFlightsTime")
+    public List<FlightOutParam> getAllFlightsTime(int status,int sourceId){
 
-        return fsi.getFlightByStatus(status,sourceId);
+        return fsi.getFlightsByTime(status,sourceId);
     }
 
     @ResponseBody
     @GetMapping("getSomeFli")
-    public List<FlightOutParam> getSomeFli(String param) {
+    public List<FlightOutParam> getSomeFli(int sou,String param) {
 
-        return ifs.getSomeFli(param);
+        return ifs.getSomeFli(sou,param);
     }
 
 
     @ResponseBody
     @GetMapping("getSomeFli2")
-    public List<FlightOutParam> getSomeFli2(String param) {
+    public List<FlightOutParam> getSomeFli2(int sou,String param) {
 
-        return ifs.getSomeFli2(param);
+        return ifs.getSomeFli2(sou,param);
     }
 
     @ResponseBody

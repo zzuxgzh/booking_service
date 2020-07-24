@@ -21,12 +21,10 @@ public interface IFlightDao {
     int update(Flight flight);
     int updateSelective(Flight flight);
     int changeFlightStatusById(Flight flight);
-    List<FlightOutParam> getFlightByStatus(@Param("status") int status,@Param("source") int source);
-//    List<FlightOutParam> getSomeFli(@Param("param") String param);
-List<FlightOutParam> getSomeFli(@Param("param") String param);
-    List<FlightOutParam> getSomeFli2(@Param("param") String param);
+List<FlightOutParam> getSomeFli(@Param("source") int source ,@Param("param") String param);
+    List<FlightOutParam> getSomeFli2(@Param("source") int source ,@Param("param") String param);
 
-
+    List<FlightOutParam>  getSourceFlisByTime (@Param("status")int status,@Param("source") int source);
 
 
 }

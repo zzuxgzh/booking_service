@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import javax.xml.crypto.Data;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -85,7 +86,6 @@ public class FlightServiceImpl implements IFlightService {
         List<FlightOutParam> flightOutParams = ifd.getAllFli();
         for (FlightOutParam flightOutParam : flightOutParams) {
 
-//            isstatus(ifd.getFlightById(flightOutParam.getFlightId()));
             Airdrome source = idd.getAirdromeById(flightOutParam.getSource());
             Airdrome target = idd.getAirdromeById(flightOutParam.getTarget());
             flightOutParam.setsName(source.getName());
@@ -113,6 +113,23 @@ public class FlightServiceImpl implements IFlightService {
         return flightOutParams;
     }
 
+    @Override
+    public List<FlightOutParam> getFlightsByTime(int status,int airdromeID) {
+        List<FlightOutParam> flightOutParams = ifd.getSourceFlisByTime(status,airdromeID);
+        flightOutParams.addAll(ifd.getTargetFlisByAirdome(airdromeID));
+        for (FlightOutParam flightOutParam : flightOutParams) {
+            Airdrome source = idd.getAirdromeById(flightOutParam.getSource());
+            Airdrome target = idd.getAirdromeById(flightOutParam.getTarget());
+            flightOutParam.setsName(source.getName());
+            flightOutParam.setSloName(ils.getFullNameById(source.getLocation()));
+            flightOutParam.settName(target.getName());
+            flightOutParam.setTloName(ils.getFullNameById(target.getLocation()));
+
+        }
+        System.out.println("------>" + flightOutParams.toString());
+        return flightOutParams;
+    }
+
 
     @Override
     public String changeFlightStatus(Flight flight, String reason) {
@@ -132,7 +149,7 @@ public class FlightServiceImpl implements IFlightService {
             return "您的操作有误，请重试！！";
         } else if (a == 1) {
             //记得校验当前航班状态和飞机状态 起飞，修改飞机的状态和航班的状态 发布公告
-            if (b == 0) {
+            if (b == 0||b==3) {
                 if (ifd.changeFlightStatusById(flight) == 1) {
                     Plane plane = new Plane();
                     plane.setPlaneId(sflight.getPlaneId());
@@ -253,27 +270,10 @@ public class FlightServiceImpl implements IFlightService {
     }
 
 
-    @Override
-    public List<FlightOutParam> getFlightByStatus(int status, int sourceId) {
 
-        List<FlightOutParam> flightOutParams = ifd.getFlightByStatus(status, sourceId);
-        flightOutParams.addAll(ifd.getTargetFlisByAirdome(sourceId));
-        for (FlightOutParam flightOutParam : flightOutParams) {
-//            isstatus(ifd.getFlightById(flightOutParam.getFlightId()));
-            Airdrome source = idd.getAirdromeById(flightOutParam.getSource());
-            Airdrome target = idd.getAirdromeById(flightOutParam.getTarget());
-            flightOutParam.setsName(source.getName());
-            flightOutParam.setSloName(ils.getFullNameById(source.getLocation()));
-            flightOutParam.settName(target.getName());
-            flightOutParam.setTloName(ils.getFullNameById(target.getLocation()));
-
-        }
-        return flightOutParams;
-    }
-
-    @Override
-    public List<FlightOutParam> getSomeFli(String param) {
-        List<FlightOutParam> flightOutParams = ifd.getSomeFli("%" + param + "%");
+      @Override
+    public List<FlightOutParam> getSomeFli(int source1,String param) {
+        List<FlightOutParam> flightOutParams = ifd.getSomeFli(source1,"%" + param + "%");
         for (FlightOutParam flightOutParam : flightOutParams) {
 //            isstatus(ifd.getFlightById(flightOutParam.getFlightId()));
             Airdrome source = idd.getAirdromeById(flightOutParam.getSource());
@@ -289,10 +289,8 @@ public class FlightServiceImpl implements IFlightService {
     }
 
     @Override
-    public List<FlightOutParam> getSomeFli2(String param) {
-        List<FlightOutParam> flightOutParams = ifd.getSomeFli2("%" + param + "%");
-
-
+    public List<FlightOutParam> getSomeFli2(int source1,String param) {
+        List<FlightOutParam> flightOutParams = ifd.getSomeFli2(source1,"%" + param + "%");
         for (FlightOutParam flightOutParam : flightOutParams) {
 //            isstatus(ifd.getFlightById(flightOutParam.getFlightId()));
             Airdrome source = idd.getAirdromeById(flightOutParam.getSource());
@@ -304,31 +302,41 @@ public class FlightServiceImpl implements IFlightService {
 
         }
         return flightOutParams;
+
     }
+
+
+
 
     @Override
     public String update(Flight flight) {
+        flight.setStatus(3);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String dateString = formatter.format(flight.getStarttime());
         if(ifd.update(flight)==1){
-            return "修改成功";
-        }else{
-            return "修改失败，请从新操作";
-        }
-    }
-
-
-    boolean isstatus(Flight flight){
-        boolean flag=false;
-        int b=flight.getStatus();
-        if(b==0&&flight.getStarttime().before(new Date())){
-            flight.setStatus(3);
-            if(  1==ifd.changeFlightStatusById(flight)){
-                flag=true;
+            Flight f=ifd.getFlightById(flight.getFlightId());
+            Announce announce = new Announce();
+            Airdrome source = idd.getAirdromeById(f.getSource());
+            Airdrome target = idd.getAirdromeById(f.getTarget());
+            announce.setContent("从" + source.getName() + "飞往" + target.getName()  + f.getPlaneId() + "号飞机,因故延误，新的起飞时间为" +dateString+"，请乘客做好准备"
+                  );
+            announce.setDate(new Date());
+            announce.setStafId(0);
+            announce.setStatus(0);
+            announce.setDromId(f.getSource());
+            if (iad.insert(announce) != 1) {
+                return "操作成功，但是公告发布失败，请补发公告！";
+            } else {
+                return "操作成功！！！！";
             }
-        }else{
-            flag= false;
+        } else {
+            return "操作故障，请重试！！！";
         }
-        return flag;
+
     }
+
+
+
 
 
 }

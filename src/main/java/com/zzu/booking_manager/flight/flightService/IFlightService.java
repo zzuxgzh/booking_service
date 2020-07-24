@@ -14,9 +14,11 @@ public interface IFlightService {
     List<FlightOutParam> getFlightsByAirdrome(int airdromeID);
 
     String changeFlightStatus(Flight flight, String reason);
-    List<FlightOutParam> getFlightByStatus( int status,int source);
-    List<FlightOutParam> getSomeFli( String param);
-    List<FlightOutParam> getSomeFli2( String param);
+
+    List<FlightOutParam> getSomeFli( int source,String param);
+    List<FlightOutParam> getSomeFli2( int source,String param);
     String update(Flight flight);
+
+    List<FlightOutParam> getFlightsByTime(int status,int airdromeID);
 
 }
