@@ -72,8 +72,8 @@ public class BuyTicketController {
         map.remove("javaDate");
         System.out.println(map.toString());
         ///模拟一下之后删掉？》》》》》》？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？
-        map.put("startTime","2020-7-18 00:00:00");
-        map.put("endTime","2020-7-19 23:59:59");
+//        map.put("startTime","2020-7-18 00:00:00");
+//        map.put("endTime","2020-7-19 23:59:59");
 //        map.put("fromCity","410100");
 //        map.put("toCity","410100");
         ///模拟一下之后删掉？》》》》》》？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？
