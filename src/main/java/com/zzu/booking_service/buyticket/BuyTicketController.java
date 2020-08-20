@@ -107,7 +107,7 @@ public class BuyTicketController {
         user.setCompany(getString("userinfoCompane"));
         user.setGender(getInt("sex"));
         int buyId = 22; //模拟当前登陆的用户
-        if(cookie.getValue("userId",request)!=null) buyId= (int) cookie.getValue("userId",request);
+         if(cookie.getValue("userId",request)!=null) buyId= (int) cookie.getValue("userId",request);
 //        buyId = 22; //模拟当前登陆的用户
         boolean re = buyTicketService.intoSingleInfo(buyId,user);
         if (re) return "1";
@@ -258,6 +258,7 @@ public class BuyTicketController {
             String cookieId = cookie.setCookie(request,response);
             cookie.setValueById(cookieId,"tel",tel);
             cookie.setValueById(cookieId,"userId",user.getUserId());
+            System.out.println(cookie);
         }
         return String.valueOf(re);
 
@@ -376,8 +377,9 @@ public class BuyTicketController {
     public void downloadTmpl(HttpServletRequest request,HttpServletResponse response){
         try {
             String fileName = "bookingtemplet.xlsx";
-            String path = request.getSession().getServletContext().getRealPath("/file")+"/"+fileName;
-            path = path.replace("\\", "/");
+//            String path = request.getSession().getServletContext().getRealPath("/file")+"/"+fileName;
+            String path = request.getSession().getServletContext().getRealPath(File.separator+"file")+File.separator+fileName;
+//            path = path.replace("\\", "/");
             File file = new File(path);
             String filename = file.getName();
             // 取得文件的后缀名。

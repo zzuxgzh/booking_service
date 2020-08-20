@@ -53,7 +53,10 @@ public class TestController {
 
     //返回jsp页面 get方法
     @GetMapping("/hello")
-    public String hello() {
+    public String hello(HttpSession httpSession) {
+        System.out.println(httpSession.getId());
+        System.out.println(httpSession.getAttribute("yes"));
+        httpSession.setAttribute("yes","1");
         return "test/index";
     }
 
@@ -95,9 +98,22 @@ public class TestController {
 
     //返回jsp渲染后的数据 post方法
     @PostMapping("/get")
-    public String get(Model model,String id) {
+    public String get(Model model,String id,HttpSession httpSession) {
         User user = testService.getUser(id);
+        System.out.println(httpSession.getId());
+        System.out.println(httpSession.getAttribute("yes"));
+        httpSession.setAttribute("yes","1");
         model.addAttribute( "user", user);
+
+        return "test/select";
+    }
+
+    //返回jsp渲染后的数据 post方法
+    @PostMapping("/getSession")
+    public String getSession(Model model,String id,HttpSession httpSession) {
+        System.out.println(httpSession.getId());
+        System.out.println(httpSession.getAttribute("yes"));
+        httpSession.setAttribute("yes","1");
         return "test/select";
     }
 

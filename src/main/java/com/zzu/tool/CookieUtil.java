@@ -34,6 +34,8 @@ public class CookieUtil {
     //从cookie中获取一个值
     public Object getValue(String key,HttpServletRequest request){
         Cookie[] cookies = request.getCookies();
+        System.out.println(request+".."+cookies+".."+request.getCookies());
+
         for (Cookie cookie : cookies) {
             if(cookie.getName().equals("cookieId")){
                 //说明存在cookie，要到redis中去获取对应的值
