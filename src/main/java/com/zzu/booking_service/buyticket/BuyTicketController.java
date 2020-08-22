@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.sun.org.apache.regexp.internal.RE;
 import com.zzu.booking_service.bean.FlightAll;
 import com.zzu.booking_service.bean.test.SingleUser;
 import com.zzu.booking_service.test.ITestService;
@@ -362,9 +363,11 @@ public class BuyTicketController {
         }
         if (flightId == 0) return "0";
         int re = buyTicketService.getSingleTicketNumById(buyId,flightId);
+        System.out.println("re:"+re);
         String result = "0";
         try {
             result = String.valueOf(re);
+            System.out.println("result:"+ result);
         } catch (Exception e) {
             e.printStackTrace();
             return "0";

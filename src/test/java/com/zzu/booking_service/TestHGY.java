@@ -66,4 +66,16 @@ public class TestHGY {
 
     }
 
+    @Test
+    public void test6(){
+
+        Date date = new Date();
+        DateFormat format = DateFormat.getDateTimeInstance();//可以精确到时分秒
+        String onTime = format.format(date);
+        System.out.println(onTime);
+
+    }
+
+
+
 }

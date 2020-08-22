@@ -273,7 +273,9 @@ public class BuyTicketService implements IBuyTicketService {
 
     @Override
     public int getSingleTicketNumById(int id, int flightId) {
-        return buyTicketDao.getSingleTicketNumById(id,flightId);
+        int re = buyTicketDao.getSingleTicketNumById(id,flightId);
+        System.out.println("service:re:"+re);
+        return re;
     }
 
     // 0 不存在    1 存在但是-1   2 存在
